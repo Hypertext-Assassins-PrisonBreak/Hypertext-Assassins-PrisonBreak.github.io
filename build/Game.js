@@ -1,8 +1,8 @@
-import Scene from './Scene.js';
+import Map from './Map.js';
 export default class Game {
-    scene;
+    map;
     constructor(canvas) {
-        this.scene = new Scene(canvas);
+        this.map = new Map(canvas);
     }
 }
 //# sourceMappingURL=Game.js.map
