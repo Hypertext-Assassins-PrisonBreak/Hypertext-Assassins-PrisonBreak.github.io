@@ -50,13 +50,13 @@ export default class Map {
     // Resize the canvas to full window size
     this.canvas.width = window.innerWidth - 1;
     this.canvas.height = window.innerHeight - 4;
-    this.render();
+    requestAnimationFrame(() => this.renderMap());
   }
 
   /**
    * Draws the game to the canvas
    */
-  public renderMap(): void {
+  public renderMap(): number {
     // Get the canvas rendering context
     const ctx = this.canvas.getContext('2d');
     // Clear the entire canvas
@@ -88,9 +88,13 @@ export default class Map {
         ctx.fillRect(x * Map.tileW, y * Map.tileH, Map.tileW, Map.tileH);
       }
     }
-
+console.log('works');
     // display FPS rate
     ctx.fillStyle = '#ff0000';
     ctx.fillText(`FPS: ${this.framesLastSecond}`, 10, 20);
+
+    requestAnimationFrame(() => this.renderMap());
+
+    return (1);
   }
 }

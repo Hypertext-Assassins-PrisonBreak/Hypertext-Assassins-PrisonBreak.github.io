@@ -4,5 +4,10 @@ export default class Game {
     constructor(canvas) {
         this.map = new Map(canvas);
     }
+    launchGame() {
+        this.map.renderMap();
+    }
+    renderFrame() {
+    }
 }
 //# sourceMappingURL=Game.js.map
