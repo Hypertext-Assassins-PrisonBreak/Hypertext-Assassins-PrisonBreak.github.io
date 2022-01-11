@@ -74,8 +74,8 @@ export default class Map {
 
     console.log(this.frameCount);
 
-    for (let y = 0; y < Map.mapH; y++) {
-      for (let x = 0; x < Map.mapW; x++) {
+    for (let y = 5; y < Map.mapH; y++) {
+      for (let x = 5; x < Map.mapW; x++) {
         switch (this.gameMap[((y * Map.mapW) + x)]) {
           case 1:
             ctx.fillStyle = '#999999';
