@@ -64,6 +64,7 @@ export default class Map {
 
     ctx.font = 'bold 10pt sans-serif';
 
+    // calculates fps
     const sec = Math.floor(Date.now() / 1000);
 
     if (sec !== this.currentSecond) {
@@ -74,8 +75,9 @@ export default class Map {
 
     console.log(this.frameCount);
 
-    for (let y = 5; y < Map.mapH; y++) {
-      for (let x = 5; x < Map.mapW; x++) {
+    // runs array and displays it on map
+    for (let y = 0; y < Map.mapH; y++) {
+      for (let x = 0; x < Map.mapW; x++) {
         switch (this.gameMap[((y * Map.mapW) + x)]) {
           case 1:
             ctx.fillStyle = '#999999';
@@ -86,6 +88,8 @@ export default class Map {
         ctx.fillRect(x * Map.tileW, y * Map.tileH, Map.tileW, Map.tileH);
       }
     }
+
+    // display FPS rate
     ctx.fillStyle = '#ff0000';
     ctx.fillText(`FPS: ${this.framesLastSecond}`, 10, 20);
   }
