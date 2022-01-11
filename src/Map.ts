@@ -56,7 +56,7 @@ export default class Map {
   /**
    * Draws the game to the canvas
    */
-  public render(): void {
+  public renderMap(): void {
     // Get the canvas rendering context
     const ctx = this.canvas.getContext('2d');
     // Clear the entire canvas
