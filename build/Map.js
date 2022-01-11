@@ -6,6 +6,7 @@ export default class Map {
     currentSecond = 0;
     framesLastSecond = 0;
     frameCount = 0;
+    lastUpdate = Date.now();
     gameMap = [
         1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
         1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
@@ -41,9 +42,13 @@ export default class Map {
         const ctx = this.canvas.getContext('2d');
         ctx.clearRect(0, 0, this.canvas.width, this.canvas.height);
         ctx.font = 'bold 10pt sans-serif';
-        const sec = Math.floor(Date.now() / 1000);
-        if (sec !== this.currentSecond) {
-            this.currentSecond = sec;
+        let now = Date.now();
+        let dt = now - this.lastUpdate;
+        this.lastUpdate = now;
+        console.log(dt / 1000);
+        const msec = Math.floor(Date.now() / 1000);
+        if (msec !== this.currentSecond) {
+            this.currentSecond = msec;
             this.framesLastSecond = this.frameCount;
             this.frameCount = 1;
         }

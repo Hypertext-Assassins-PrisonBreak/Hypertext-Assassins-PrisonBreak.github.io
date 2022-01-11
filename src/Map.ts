@@ -13,6 +13,8 @@ export default class Map {
 
   private frameCount = 0;
 
+  private lastUpdate = Date.now();
+
   private gameMap = [
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
@@ -53,6 +55,7 @@ export default class Map {
     requestAnimationFrame(() => this.renderMap());
   }
 
+  // eslint-disable-next-line jsdoc/require-returns
   /**
    * Draws the game to the canvas
    */
@@ -64,11 +67,19 @@ export default class Map {
 
     ctx.font = 'bold 10pt sans-serif';
 
-    // calculates fps
-    const sec = Math.floor(Date.now() / 1000);
 
-    if (sec !== this.currentSecond) {
-      this.currentSecond = sec;
+    let now = Date.now();
+    let dt = now - this.lastUpdate;
+    this.lastUpdate = now;
+
+
+
+    console.log(dt / 1000);
+
+    // calculates fps
+    const msec = Math.floor(Date.now() / 1000);
+    if (msec !== this.currentSecond) {
+      this.currentSecond = msec;
       this.framesLastSecond = this.frameCount;
       this.frameCount = 1;
     } else { this.frameCount += 1; }
