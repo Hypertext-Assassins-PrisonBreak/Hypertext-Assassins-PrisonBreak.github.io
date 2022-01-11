@@ -1,8 +1,8 @@
 import Map from './Map.js';
 
 export default class Game {
-
   private map: Map;
+
   /**
    * Construc a new instance of this class
    *
