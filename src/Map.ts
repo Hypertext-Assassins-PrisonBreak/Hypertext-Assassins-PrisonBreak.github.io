@@ -28,10 +28,10 @@ export default class Map {
   /**
    * Constructing a new instance of this class
    *
-   * @param canvasContext the Canvas Context to render with
+   * @param canvas the Canvas to render on
    */
-  public constructor(canvasContext: CanvasRenderingContext2D) {
-    this.canvasContext = canvasContext;
+  public constructor(canvas: HTMLCanvasElement) {
+    this.canvasContext = canvas.getContext('2d');
   }
 
   /**
@@ -41,8 +41,8 @@ export default class Map {
    */
   public renderMap(canvasContext: CanvasRenderingContext2D): void {
     // runs array and displays it on map
-    for (let x = 0; x < this.mapW; x++) {
-      for (let y = 0; y < this.mapH; y++) {
+    for (let y = 0; y < this.mapH; y++) {
+      for (let x = 0; x < this.mapW; x++) {
         this.renderMapTile(canvasContext, x, y);
       }
     }

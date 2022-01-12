@@ -17,20 +17,18 @@ export default class Game {
         this.canvas.height = 11 * 50;
     }
     gameLaunch() {
-        this.map = new Map(this.getCanvasContext());
+        this.map = new Map(this.canvas);
         this.keyListener = new KeyListener();
         this.player = new Player(100, 100, this.keyListener, this.map);
-        this.getCanvasContext();
-        this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.map.renderMap(this.getCanvasContext());
         requestAnimationFrame(() => this.renderFrame());
     }
     renderFrame() {
-        this.renderFps(this.calculateFps());
         this.player.processPlayerMovement(this.calculateTimeDeltaTime());
         if (this.player.processPlayerMovement(this.calculateTimeDeltaTime())) {
             this.player.renderCharacter(this.getCanvasContext());
         }
+        this.renderFps(this.calculateFps());
         requestAnimationFrame(() => this.renderFrame());
     }
     getCanvasContext() {
@@ -59,6 +57,7 @@ export default class Game {
     }
     renderFps(fps) {
         this.canvasContext.font = 'bold 10pt sans-serif';
+        this.canvasContext.clearRect(0, 0, 100, 30);
         this.canvasContext.fillStyle = '#ff0000';
         this.canvasContext.fillText(`FPS: ${fps}`, 10, 20);
     }

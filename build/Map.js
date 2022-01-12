@@ -18,12 +18,12 @@ export default class Map {
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     ];
     canvasContext;
-    constructor(canvasContext) {
-        this.canvasContext = canvasContext;
+    constructor(canvas) {
+        this.canvasContext = canvas.getContext('2d');
     }
     renderMap(canvasContext) {
-        for (let x = 0; x < this.mapW; x++) {
-            for (let y = 0; y < this.mapH; y++) {
+        for (let y = 0; y < this.mapH; y++) {
+            for (let x = 0; x < this.mapW; x++) {
                 this.renderMapTile(canvasContext, x, y);
             }
         }
