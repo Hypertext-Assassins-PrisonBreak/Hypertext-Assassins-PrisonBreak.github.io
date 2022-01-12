@@ -1,7 +1,10 @@
 import Map from './Map.js';
+import KeyListener from './KeyListener.js';
 
 export default class Game {
   private map: Map;
+
+  private keyListener: KeyListener;
 
   private canvas: HTMLCanvasElement;
 
@@ -31,7 +34,21 @@ export default class Game {
    */
   public gamelaunch(): void {
     this.map = new Map(this.canvas, this.canvasContext);
+    this.keyListener = new KeyListener();
 
+    requestAnimationFrame(() => this.renderFrame());
+  }
+
+  /**
+   * Rendering of a frame
+   */
+  public renderFrame(): void {
+    this.getCanvasContext();
+    this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.map.renderMap(this.getCanvasContext());
+    this.renderFps(this.calculateFps());
+    this.calculateTimeDeltaTime();
+    this.processInput();
     requestAnimationFrame(() => this.renderFrame());
   }
 
@@ -89,14 +106,21 @@ export default class Game {
   }
 
   /**
-   * Rendering of a frame
+   * Handles any user input that has happened since the last call
    */
-  public renderFrame(): void {
-    this.getCanvasContext();
-    this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.map.renderMap(this.getCanvasContext());
-    this.renderFps(this.calculateFps());
-    this.calculateTimeDeltaTime();
-    requestAnimationFrame(() => this.renderFrame());
+  public processInput(): void {
+    // Move player
+    if (this.keyListener.isKeyDown(KeyListener.KEY_LEFT) && true) {
+      console.log('left');
+    }
+    if (this.keyListener.isKeyDown(KeyListener.KEY_UP) && true) {
+      console.log('up');
+    }
+    if (this.keyListener.isKeyDown(KeyListener.KEY_RIGHT) && true) {
+      console.log('right');
+    }
+    if (this.keyListener.isKeyDown(KeyListener.KEY_DOWN) && true) {
+      console.log('down');
+    }
   }
 }
