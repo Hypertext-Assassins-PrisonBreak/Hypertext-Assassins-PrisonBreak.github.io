@@ -2,9 +2,11 @@ import Character from './Character.js';
 import KeyListener from './KeyListener.js';
 export default class Player extends Character {
     keyListener;
-    constructor(xcoord, ycoord, keyListener) {
+    map;
+    constructor(xcoord, ycoord, keyListener, map) {
         super(xcoord, ycoord);
         this.keyListener = keyListener;
+        this.map = map;
     }
     processPlayerMovement(tdt) {
         let xvector = 0;
@@ -33,8 +35,27 @@ export default class Player extends Character {
             console.log('down');
             yvector += 1;
         }
-        this.xcoord += xvector * tdt * 250;
-        this.ycoord += yvector * tdt * 250;
+        if (xvector !== 0 && yvector !== 0) {
+            xvector /= Math.sqrt(2);
+            yvector /= Math.sqrt(2);
+        }
+        const newxcoord = this.xcoord + xvector * tdt * 250;
+        const newycoord = this.ycoord + yvector * tdt * 250;
+        if (this.playerCollisionCheck(newxcoord, newycoord)) {
+            this.xcoord = newxcoord;
+            this.ycoord = newycoord;
+        }
+    }
+    playerCollisionCheck(xcoord, ycoord) {
+        let isOnFreeSpot = true;
+        for (let i = xcoord; i < xcoord + this.collisionW; i++) {
+            for (let j = ycoord; j < ycoord + this.collisionH; j++) {
+                if (this.map.gameMap[Math.floor(j / this.map.tileH)][Math.floor(i / this.map.tileW)] === 1) {
+                    isOnFreeSpot = false;
+                }
+            }
+        }
+        return isOnFreeSpot;
     }
 }
 //# sourceMappingURL=Player.js.map

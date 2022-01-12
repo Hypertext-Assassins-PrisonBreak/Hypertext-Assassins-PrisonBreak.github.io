@@ -13,13 +13,13 @@ export default class Game {
     lastUpdate = Date.now();
     constructor(canvas) {
         this.canvas = canvas;
-        this.canvas.width = Map.mapW * Map.tileW;
-        this.canvas.height = Map.mapH * Map.tileH;
+        this.canvas.width = 24 * 50;
+        this.canvas.height = 11 * 50;
     }
     gameLaunch() {
         this.map = new Map(this.getCanvasContext());
         this.keyListener = new KeyListener();
-        this.player = new Player(100, 100, this.keyListener);
+        this.player = new Player(100, 100, this.keyListener, this.map);
         requestAnimationFrame(() => this.renderFrame());
     }
     renderFrame() {

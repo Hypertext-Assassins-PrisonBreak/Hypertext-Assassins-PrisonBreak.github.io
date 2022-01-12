@@ -1,8 +1,11 @@
 import Character from './Character.js';
 import KeyListener from './KeyListener.js';
+import Map from './Map.js';
 
 export default class Player extends Character {
   public keyListener: KeyListener;
+
+  public map: Map;
 
   /**
    * Constructing a new instance of this class
@@ -10,10 +13,12 @@ export default class Player extends Character {
    * @param xcoord x cordinate
    * @param ycoord y cordinate
    * @param keyListener KeyListener instance
+   * @param map Map instance
    */
-  public constructor(xcoord: number, ycoord: number, keyListener: KeyListener) {
+  public constructor(xcoord: number, ycoord: number, keyListener: KeyListener, map: Map) {
     super(xcoord, ycoord);
     this.keyListener = keyListener;
+    this.map = map;
   }
 
   /**
@@ -49,7 +54,34 @@ export default class Player extends Character {
       console.log('down');
       yvector += 1;
     }
-    this.xcoord += xvector * tdt * 250;
-    this.ycoord += yvector * tdt * 250;
+    if (xvector !== 0 && yvector !== 0) {
+      xvector /= Math.sqrt(2);
+      yvector /= Math.sqrt(2);
+    }
+    const newxcoord: number = this.xcoord + xvector * tdt * 250;
+    const newycoord: number = this.ycoord + yvector * tdt * 250;
+    if (this.playerCollisionCheck(newxcoord, newycoord)) {
+      this.xcoord = newxcoord;
+      this.ycoord = newycoord;
+    }
+  }
+
+  /**
+   * Collision check for Player Collision Box
+   *
+   * @param xcoord x cordinate
+   * @param ycoord y cordinate
+   * @returns True is Player stands on free spot
+   */
+  public playerCollisionCheck(xcoord: number, ycoord: number): boolean {
+    let isOnFreeSpot: boolean = true;
+    for (let i = xcoord; i < xcoord + this.collisionW; i++) {
+      for (let j = ycoord; j < ycoord + this.collisionH; j++) {
+        if (this.map.gameMap[Math.floor(j / this.map.tileH)][Math.floor(i / this.map.tileW)] === 1) {
+          isOnFreeSpot = false;
+        }
+      }
+    }
+    return isOnFreeSpot;
   }
 }
