@@ -1,10 +1,14 @@
 import Map from './Map.js';
 import KeyListener from './KeyListener.js';
+import Character from './Character.js';
+import Player from './Player.js';
 
 export default class Game {
   private map: Map;
 
   private keyListener: KeyListener;
+
+  private player : Player;
 
   private canvas: HTMLCanvasElement;
 
@@ -35,6 +39,7 @@ export default class Game {
   public gamelaunch(): void {
     this.map = new Map(this.canvas, this.canvasContext);
     this.keyListener = new KeyListener();
+    this.player = new Player(100, 100);
 
     requestAnimationFrame(() => this.renderFrame());
   }
@@ -49,6 +54,7 @@ export default class Game {
     this.renderFps(this.calculateFps());
     this.calculateTimeDeltaTime();
     this.processInput();
+    this.player.renderCharacter(this.getCanvasContext());
     requestAnimationFrame(() => this.renderFrame());
   }
 

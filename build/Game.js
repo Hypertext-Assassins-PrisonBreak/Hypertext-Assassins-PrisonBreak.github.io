@@ -1,8 +1,10 @@
 import Map from './Map.js';
 import KeyListener from './KeyListener.js';
+import Player from './Player.js';
 export default class Game {
     map;
     keyListener;
+    player;
     canvas;
     canvasContext;
     currentSecond = 0;
@@ -17,6 +19,7 @@ export default class Game {
     gamelaunch() {
         this.map = new Map(this.canvas, this.canvasContext);
         this.keyListener = new KeyListener();
+        this.player = new Player(100, 100);
         requestAnimationFrame(() => this.renderFrame());
     }
     renderFrame() {
@@ -26,6 +29,7 @@ export default class Game {
         this.renderFps(this.calculateFps());
         this.calculateTimeDeltaTime();
         this.processInput();
+        this.player.renderCharacter(this.getCanvasContext());
         requestAnimationFrame(() => this.renderFrame());
     }
     getCanvasContext() {
