@@ -94,7 +94,7 @@ export default class Game {
   public renderFrame(): void {
     this.getCanvasContext();
     this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.map.renderMap();
+    this.map.renderMap(this.getCanvasContext());
     this.renderFps(this.calculateFps());
     this.calculateTimeDeltaTime();
     requestAnimationFrame(() => this.renderFrame());
