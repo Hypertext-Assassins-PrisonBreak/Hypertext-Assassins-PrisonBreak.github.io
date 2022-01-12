@@ -23,7 +23,7 @@ export default class Map {
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
   ];
 
-  private canvasContext : CanvasRenderingContext2D;
+  public canvasContext : CanvasRenderingContext2D;
 
   /**
    * Constructing a new instance of this class
@@ -35,7 +35,7 @@ export default class Map {
   }
 
   /**
-   * Draws the game to the canvas
+   * Rendering Map
    *
    * @param canvasContext the Canvas Context to draw with
    */
@@ -43,19 +43,35 @@ export default class Map {
     // runs array and displays it on map
     for (let x = 0; x < this.mapW; x++) {
       for (let y = 0; y < this.mapH; y++) {
-        switch (this.gameMap[y][x]) {
-          case 1:
-            canvasContext.fillStyle = '#999999';
-            break;
-          default:
-            canvasContext.drawImage(this.image(), x * this.tileW, y * this.tileH);
-        }
-        canvasContext.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
+        this.renderMapTile(canvasContext, x, y);
       }
     }
     console.log('works');
   }
 
+  /**
+   * Rendering a Map Tile
+   *
+   * @param canvasContext the Canvas Context to draw with
+   * @param x x cordinate of Tile
+   * @param y y cordinate of Tile
+   */
+  public renderMapTile(canvasContext: CanvasRenderingContext2D, x: number, y: number): void {
+    switch (this.gameMap[y][x]) {
+      case 1:
+        canvasContext.fillStyle = '#999999';
+        canvasContext.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
+        break;
+      default:
+        canvasContext.drawImage(this.image(), x * this.tileW, y * this.tileH);
+    }
+  }
+
+  /**
+   * Providing access to Image Asset
+   *
+   * @returns HTMLImageElement
+   */
   public image(): HTMLImageElement {
     this.img = new Image();
     this.img.src = '../Assets/tile1.jpeg';

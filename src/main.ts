@@ -8,4 +8,5 @@ window.addEventListener('load', () => {
 
   const game = new Game(document.getElementById('canvas'));
   game.gameLaunch();
+  return true;
 });

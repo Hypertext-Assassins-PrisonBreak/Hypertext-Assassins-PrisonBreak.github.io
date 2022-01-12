@@ -2,11 +2,9 @@ import Character from './Character.js';
 import KeyListener from './KeyListener.js';
 export default class Player extends Character {
     keyListener;
-    map;
     constructor(xcoord, ycoord, keyListener, map) {
-        super(xcoord, ycoord);
+        super(xcoord, ycoord, map);
         this.keyListener = keyListener;
-        this.map = map;
     }
     processPlayerMovement(tdt) {
         let xvector = 0;
@@ -44,13 +42,17 @@ export default class Player extends Character {
         if (this.playerCollisionCheck(newxcoord, newycoord)) {
             this.xcoord = newxcoord;
             this.ycoord = newycoord;
+            return true;
         }
-        else if (this.playerCollisionCheck(newxcoord, this.ycoord)) {
+        if (this.playerCollisionCheck(newxcoord, this.ycoord)) {
             this.xcoord = newxcoord;
+            return true;
         }
-        else if (this.playerCollisionCheck(this.xcoord, newycoord)) {
+        if (this.playerCollisionCheck(this.xcoord, newycoord)) {
             this.ycoord = newycoord;
+            return true;
         }
+        return false;
     }
     playerCollisionCheck(xcoord, ycoord) {
         let isOnFreeSpot = true;

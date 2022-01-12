@@ -24,17 +24,20 @@ export default class Map {
     renderMap(canvasContext) {
         for (let x = 0; x < this.mapW; x++) {
             for (let y = 0; y < this.mapH; y++) {
-                switch (this.gameMap[y][x]) {
-                    case 1:
-                        canvasContext.fillStyle = '#999999';
-                        break;
-                    default:
-                        canvasContext.drawImage(this.image(), x * this.tileW, y * this.tileH);
-                }
-                canvasContext.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
+                this.renderMapTile(canvasContext, x, y);
             }
         }
         console.log('works');
+    }
+    renderMapTile(canvasContext, x, y) {
+        switch (this.gameMap[y][x]) {
+            case 1:
+                canvasContext.fillStyle = '#999999';
+                canvasContext.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
+                break;
+            default:
+                canvasContext.drawImage(this.image(), x * this.tileW, y * this.tileH);
+        }
     }
     image() {
         this.img = new Image();

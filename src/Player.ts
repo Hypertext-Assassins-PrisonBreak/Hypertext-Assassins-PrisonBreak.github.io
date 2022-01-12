@@ -5,28 +5,26 @@ import Map from './Map.js';
 export default class Player extends Character {
   public keyListener: KeyListener;
 
-  public map: Map;
-
   /**
    * Constructing a new instance of this class
    *
-   * @param xcoord x cordinate
-   * @param ycoord y cordinate
+   * @param xcoord x cordinate of Player
+   * @param ycoord y cordinate of Player
    * @param keyListener KeyListener instance
    * @param map Map instance
    */
   public constructor(xcoord: number, ycoord: number, keyListener: KeyListener, map: Map) {
-    super(xcoord, ycoord);
+    super(xcoord, ycoord, map);
     this.keyListener = keyListener;
-    this.map = map;
   }
 
   /**
    * Handles player movement input that has happened since the last call
    *
    * @param tdt Time.DeltaTime
+   * @returns True if player moved in this Frame
    */
-  public processPlayerMovement(tdt: number): void {
+  public processPlayerMovement(tdt: number): boolean {
     let xvector: number = 0;
     let yvector: number = 0;
     // Read Key Presses
@@ -63,18 +61,24 @@ export default class Player extends Character {
     if (this.playerCollisionCheck(newxcoord, newycoord)) {
       this.xcoord = newxcoord;
       this.ycoord = newycoord;
-    } else if (this.playerCollisionCheck(newxcoord, this.ycoord)) {
-      this.xcoord = newxcoord;
-    } else if (this.playerCollisionCheck(this.xcoord, newycoord)) {
-      this.ycoord = newycoord;
+      return true;
     }
+    if (this.playerCollisionCheck(newxcoord, this.ycoord)) {
+      this.xcoord = newxcoord;
+      return true;
+    }
+    if (this.playerCollisionCheck(this.xcoord, newycoord)) {
+      this.ycoord = newycoord;
+      return true;
+    }
+    return false;
   }
 
   /**
    * Collision check for Player Collision Box
    *
-   * @param xcoord x cordinate
-   * @param ycoord y cordinate
+   * @param xcoord x cordinate of Player
+   * @param ycoord y cordinate of Player
    * @returns True is Player stands on free spot
    */
   public playerCollisionCheck(xcoord: number, ycoord: number): boolean {

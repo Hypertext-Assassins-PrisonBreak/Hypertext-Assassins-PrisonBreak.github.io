@@ -40,6 +40,10 @@ export default class Game {
     this.keyListener = new KeyListener();
     this.player = new Player(100, 100, this.keyListener, this.map);
 
+    this.getCanvasContext();
+    this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.map.renderMap(this.getCanvasContext());
+
     requestAnimationFrame(() => this.renderFrame());
   }
 
@@ -47,12 +51,11 @@ export default class Game {
    * Rendering of a Frame
    */
   public renderFrame(): void {
-    this.getCanvasContext();
-    this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.map.renderMap(this.getCanvasContext());
     this.renderFps(this.calculateFps());
     this.player.processPlayerMovement(this.calculateTimeDeltaTime());
-    this.player.renderCharacter(this.getCanvasContext());
+    if (this.player.processPlayerMovement(this.calculateTimeDeltaTime())) {
+      this.player.renderCharacter(this.getCanvasContext());
+    }
     requestAnimationFrame(() => this.renderFrame());
   }
 
@@ -94,7 +97,7 @@ export default class Game {
       this.frameCount = 1;
     } else { this.frameCount += 1; }
 
-    console.log(this.frameCount);
+    console.log(this.framesLastSecond);
     return this.framesLastSecond;
   }
 
