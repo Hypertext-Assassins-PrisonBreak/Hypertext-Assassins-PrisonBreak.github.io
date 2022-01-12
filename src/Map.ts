@@ -60,21 +60,10 @@ export default class Map {
     switch (this.gameMap[y][x]) {
       case 1:
         canvasContext.fillStyle = '#999999';
-        canvasContext.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
         break;
       default:
-        canvasContext.drawImage(this.image(), x * this.tileW, y * this.tileH);
+        canvasContext.fillStyle = '#eeeeee';
     }
-  }
-
-  /**
-   * Providing access to Image Asset
-   *
-   * @returns HTMLImageElement
-   */
-  public image(): HTMLImageElement {
-    this.img = new Image();
-    this.img.src = '../Assets/tile1.jpeg';
-    return this.img;
+    canvasContext.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
   }
 }
