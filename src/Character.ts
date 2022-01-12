@@ -3,6 +3,10 @@ export default class Character {
 
   public ycoord: number;
 
+  public collisionW: number = 40;
+
+  public collisionH: number = 40;
+
   /**
    * Constructing a new instance of this class
    *
@@ -15,11 +19,11 @@ export default class Character {
   }
 
   /**
-   * creates chracter
+   * Rendering Chracter
    *
-   * @param canvasContext character context
+   * @param canvasContext the Canvas Context to render with
    */
   public renderCharacter(canvasContext: CanvasRenderingContext2D): void {
-    canvasContext.fillRect(this.xcoord, this.ycoord, 20, 20);
+    canvasContext.fillRect(this.xcoord, this.ycoord, this.collisionW, this.collisionH);
   }
 }

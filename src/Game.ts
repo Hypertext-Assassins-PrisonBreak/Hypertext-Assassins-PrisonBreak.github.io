@@ -6,7 +6,7 @@ import Player from './Player.js';
 export default class Game {
   private map: Map;
 
-  private keyListener: KeyListener;
+  public keyListener: KeyListener;
 
   private player : Player;
 
@@ -23,9 +23,9 @@ export default class Game {
   private lastUpdate = Date.now();
 
   /**
-   * Construc a new instance of this class
+   * Constructing a new instance of this class
    *
-   * @param canvas the canvas to render on
+   * @param canvas the Canvas to render on
    */
   public constructor(canvas: HTMLElement) {
     this.canvas = <HTMLCanvasElement>canvas;
@@ -34,33 +34,33 @@ export default class Game {
   }
 
   /**
-   * Game launch
+   * Game Launch
    */
-  public gamelaunch(): void {
+  public gameLaunch(): void {
     this.map = new Map(this.getCanvasContext());
     this.keyListener = new KeyListener();
-    this.player = new Player(100, 100);
+    this.player = new Player(100, 100, this.keyListener);
 
     requestAnimationFrame(() => this.renderFrame());
   }
 
   /**
-   * Rendering of a frame
+   * Rendering of a Frame
    */
   public renderFrame(): void {
     this.getCanvasContext();
     this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.map.renderMap(this.getCanvasContext());
     this.renderFps(this.calculateFps());
-    this.processPlayerInput();
+    this.player.processPlayerMovement(this.calculateTimeDeltaTime());
     this.player.renderCharacter(this.getCanvasContext());
     requestAnimationFrame(() => this.renderFrame());
   }
 
   /**
-   * get canvas context
+   * Getting the Canvas Context
    *
-   * @returns Context of the Canvas
+   * @returns Canvas Context
    */
   public getCanvasContext(): CanvasRenderingContext2D {
     this.canvasContext = this.canvas.getContext('2d');
@@ -108,33 +108,5 @@ export default class Game {
     this.canvasContext.font = 'bold 10pt sans-serif';
     this.canvasContext.fillStyle = '#ff0000';
     this.canvasContext.fillText(`FPS: ${fps}`, 10, 20);
-  }
-
-  /**
-   * Handles any user input that has happened since the last call
-   */
-  public processPlayerInput(): void {
-    let xvector: number = 0;
-    let yvector: number = 0;
-    // Read Key Presses
-    if (this.keyListener.isKeyDown(KeyListener.KEY_LEFT) && true) {
-      console.log('left');
-      xvector += -1;
-    }
-    if (this.keyListener.isKeyDown(KeyListener.KEY_UP) && true) {
-      console.log('up');
-      yvector += -1;
-    }
-    if (this.keyListener.isKeyDown(KeyListener.KEY_RIGHT) && true) {
-      console.log('right');
-      xvector += 1;
-    }
-    if (this.keyListener.isKeyDown(KeyListener.KEY_DOWN) && true) {
-      console.log('down');
-      yvector += 1;
-    }
-    const tdt: number = this.calculateTimeDeltaTime();
-    this.player.xcoord += xvector * tdt * 100;
-    this.player.ycoord += yvector * tdt * 100;
   }
 }

@@ -16,10 +16,10 @@ export default class Game {
         this.canvas.width = Map.mapW * Map.tileW;
         this.canvas.height = Map.mapH * Map.tileH;
     }
-    gamelaunch() {
+    gameLaunch() {
         this.map = new Map(this.getCanvasContext());
         this.keyListener = new KeyListener();
-        this.player = new Player(100, 100);
+        this.player = new Player(100, 100, this.keyListener);
         requestAnimationFrame(() => this.renderFrame());
     }
     renderFrame() {
@@ -27,7 +27,7 @@ export default class Game {
         this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.map.renderMap(this.getCanvasContext());
         this.renderFps(this.calculateFps());
-        this.processPlayerInput();
+        this.player.processPlayerMovement(this.calculateTimeDeltaTime());
         this.player.renderCharacter(this.getCanvasContext());
         requestAnimationFrame(() => this.renderFrame());
     }
@@ -59,29 +59,6 @@ export default class Game {
         this.canvasContext.font = 'bold 10pt sans-serif';
         this.canvasContext.fillStyle = '#ff0000';
         this.canvasContext.fillText(`FPS: ${fps}`, 10, 20);
-    }
-    processPlayerInput() {
-        let xvector = 0;
-        let yvector = 0;
-        if (this.keyListener.isKeyDown(KeyListener.KEY_LEFT) && true) {
-            console.log('left');
-            xvector += -1;
-        }
-        if (this.keyListener.isKeyDown(KeyListener.KEY_UP) && true) {
-            console.log('up');
-            yvector += -1;
-        }
-        if (this.keyListener.isKeyDown(KeyListener.KEY_RIGHT) && true) {
-            console.log('right');
-            xvector += 1;
-        }
-        if (this.keyListener.isKeyDown(KeyListener.KEY_DOWN) && true) {
-            console.log('down');
-            yvector += 1;
-        }
-        const tdt = this.calculateTimeDeltaTime();
-        this.player.xcoord += xvector * tdt * 100;
-        this.player.ycoord += yvector * tdt * 100;
     }
 }
 //# sourceMappingURL=Game.js.map
