@@ -63,6 +63,10 @@ export default class Player extends Character {
     if (this.playerCollisionCheck(newxcoord, newycoord)) {
       this.xcoord = newxcoord;
       this.ycoord = newycoord;
+    } else if (this.playerCollisionCheck(newxcoord, this.ycoord)) {
+      this.xcoord = newxcoord;
+    } else if (this.playerCollisionCheck(this.xcoord, newycoord)) {
+      this.ycoord = newycoord;
     }
   }
 
@@ -77,7 +81,8 @@ export default class Player extends Character {
     let isOnFreeSpot: boolean = true;
     for (let i = xcoord; i < xcoord + this.collisionW; i++) {
       for (let j = ycoord; j < ycoord + this.collisionH; j++) {
-        if (this.map.gameMap[Math.floor(j / this.map.tileH)][Math.floor(i / this.map.tileW)] === 1) {
+        if (this.map.gameMap[Math.floor(j / this.map.tileH)][Math.floor(i / this.map.tileW)]
+          === 1) {
           isOnFreeSpot = false;
         }
       }
