@@ -41,7 +41,11 @@ export default class Map {
                         canvasContext.fillStyle = '#999999';
                         break;
                     default:
+<<<<<<< Updated upstream
                         canvasContext.fillStyle = '#EEEEEE';
+=======
+                        canvasContext.fillStyle = '#eeeeee';
+>>>>>>> Stashed changes
                 }
                 canvasContext.fillRect(x * Map.tileW, y * Map.tileH, Map.tileW, Map.tileH);
             }
