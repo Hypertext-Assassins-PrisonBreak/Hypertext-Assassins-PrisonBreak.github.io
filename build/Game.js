@@ -1,8 +1,10 @@
 import Map from './Map.js';
 import KeyListener from './KeyListener.js';
+import Player from './Player.js';
 export default class Game {
     map;
     keyListener;
+    player;
     canvas;
     canvasContext;
     currentSecond = 0;
@@ -11,21 +13,22 @@ export default class Game {
     lastUpdate = Date.now();
     constructor(canvas) {
         this.canvas = canvas;
-        this.canvas.width = window.innerWidth - 1;
-        this.canvas.height = window.innerHeight - 4;
+        this.canvas.width = 24 * 50;
+        this.canvas.height = 11 * 50;
     }
-    gamelaunch() {
-        this.map = new Map(this.canvas, this.canvasContext);
+    gameLaunch() {
+        this.map = new Map(this.canvas);
         this.keyListener = new KeyListener();
+        this.player = new Player(100, 100, this.keyListener, this.map);
+        this.map.renderMap(this.getCanvasContext());
         requestAnimationFrame(() => this.renderFrame());
     }
     renderFrame() {
-        this.getCanvasContext();
-        this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
-        this.map.renderMap(this.getCanvasContext());
+        this.player.processPlayerMovement(this.calculateTimeDeltaTime());
+        if (this.player.processPlayerMovement(this.calculateTimeDeltaTime())) {
+            this.player.renderCharacter(this.getCanvasContext());
+        }
         this.renderFps(this.calculateFps());
-        this.calculateTimeDeltaTime();
-        this.processInput();
         requestAnimationFrame(() => this.renderFrame());
     }
     getCanvasContext() {
@@ -49,27 +52,14 @@ export default class Game {
         else {
             this.frameCount += 1;
         }
-        console.log(this.frameCount);
+        console.log(this.framesLastSecond);
         return this.framesLastSecond;
     }
     renderFps(fps) {
         this.canvasContext.font = 'bold 10pt sans-serif';
+        this.canvasContext.clearRect(0, 0, 100, 30);
         this.canvasContext.fillStyle = '#ff0000';
         this.canvasContext.fillText(`FPS: ${fps}`, 10, 20);
-    }
-    processInput() {
-        if (this.keyListener.isKeyDown(KeyListener.KEY_LEFT) && true) {
-            console.log('left');
-        }
-        if (this.keyListener.isKeyDown(KeyListener.KEY_UP) && true) {
-            console.log('up');
-        }
-        if (this.keyListener.isKeyDown(KeyListener.KEY_RIGHT) && true) {
-            console.log('right');
-        }
-        if (this.keyListener.isKeyDown(KeyListener.KEY_DOWN) && true) {
-            console.log('down');
-        }
     }
 }
 //# sourceMappingURL=Game.js.map

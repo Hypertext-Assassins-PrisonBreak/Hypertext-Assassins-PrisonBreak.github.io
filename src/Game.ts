@@ -1,10 +1,13 @@
 import Map from './Map.js';
 import KeyListener from './KeyListener.js';
+import Player from './Player.js';
 
 export default class Game {
-  private map: Map;
+  public map: Map;
 
-  private keyListener: KeyListener;
+  public keyListener: KeyListener;
+
+  private player : Player;
 
   private canvas: HTMLCanvasElement;
 
@@ -19,43 +22,47 @@ export default class Game {
   private lastUpdate = Date.now();
 
   /**
-   * Construc a new instance of this class
+   * Constructing a new instance of this class
    *
-   * @param canvas the canvas to render on
+   * @param canvas the Canvas to render on
    */
   public constructor(canvas: HTMLElement) {
     this.canvas = <HTMLCanvasElement>canvas;
-    this.canvas.width = window.innerWidth - 1;
-    this.canvas.height = window.innerHeight - 4;
+    this.canvas.width = 24 * 50;
+    this.canvas.height = 11 * 50;
   }
 
   /**
-   * Game launch
+   * Game Launch
    */
-  public gamelaunch(): void {
-    this.map = new Map(this.canvas, this.canvasContext);
+  public gameLaunch(): void {
+    this.map = new Map(this.canvas);
     this.keyListener = new KeyListener();
+    this.player = new Player(100, 100, this.keyListener, this.map);
+
+    // this.getCanvasContext();
+    // this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
+    this.map.renderMap(this.getCanvasContext());
 
     requestAnimationFrame(() => this.renderFrame());
   }
 
   /**
-   * Rendering of a frame
+   * Rendering of a Frame
    */
   public renderFrame(): void {
-    this.getCanvasContext();
-    this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.map.renderMap(this.getCanvasContext());
+    this.player.processPlayerMovement(this.calculateTimeDeltaTime());
+    if (this.player.processPlayerMovement(this.calculateTimeDeltaTime())) {
+      this.player.renderCharacter(this.getCanvasContext());
+    }
     this.renderFps(this.calculateFps());
-    this.calculateTimeDeltaTime();
-    this.processInput();
     requestAnimationFrame(() => this.renderFrame());
   }
 
   /**
-   * get canvas context
+   * Getting the Canvas Context
    *
-   * @returns Context of the Canvas
+   * @returns Canvas Context
    */
   public getCanvasContext(): CanvasRenderingContext2D {
     this.canvasContext = this.canvas.getContext('2d');
@@ -90,7 +97,7 @@ export default class Game {
       this.frameCount = 1;
     } else { this.frameCount += 1; }
 
-    console.log(this.frameCount);
+    console.log(this.framesLastSecond);
     return this.framesLastSecond;
   }
 
@@ -101,26 +108,8 @@ export default class Game {
    */
   public renderFps(fps: number): void {
     this.canvasContext.font = 'bold 10pt sans-serif';
+    this.canvasContext.clearRect(0, 0, 100, 30);
     this.canvasContext.fillStyle = '#ff0000';
     this.canvasContext.fillText(`FPS: ${fps}`, 10, 20);
-  }
-
-  /**
-   * Handles any user input that has happened since the last call
-   */
-  public processInput(): void {
-    // Move player
-    if (this.keyListener.isKeyDown(KeyListener.KEY_LEFT) && true) {
-      console.log('left');
-    }
-    if (this.keyListener.isKeyDown(KeyListener.KEY_UP) && true) {
-      console.log('up');
-    }
-    if (this.keyListener.isKeyDown(KeyListener.KEY_RIGHT) && true) {
-      console.log('right');
-    }
-    if (this.keyListener.isKeyDown(KeyListener.KEY_DOWN) && true) {
-      console.log('down');
-    }
   }
 }
