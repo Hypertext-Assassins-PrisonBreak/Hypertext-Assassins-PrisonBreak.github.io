@@ -57,12 +57,19 @@ export default class Map {
    * @param y y cordinate of Tile
    */
   public renderMapTile(canvasContext: CanvasRenderingContext2D, x: number, y: number): void {
+    const img1 = new Image();
+    img1.src = 'https://opengameart.org/sites/default/files/styles/medium/public/textureStone_0.png';
+    const img2 = new Image();
+    img2.src = 'https://ecrespo210.files.wordpress.com/2013/01/grass.png';
+    const pattern = canvasContext.createPattern(img1, 'repeat');
+    const pattern2 = canvasContext.createPattern(img2, 'repeat');
+
     switch (this.gameMap[y][x]) {
       case 1:
-        canvasContext.fillStyle = '#999999';
+        canvasContext.fillStyle = pattern;
         break;
       default:
-        canvasContext.fillStyle = '#00ee00';
+        canvasContext.fillStyle = pattern2;
     }
     canvasContext.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
   }
