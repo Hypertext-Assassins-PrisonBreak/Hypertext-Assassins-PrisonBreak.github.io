@@ -34,6 +34,18 @@ export default class Map {
         this.canvasContext = canvasContext;
     }
     renderMap() {
+        for (let y = 0; y < Map.mapH; y++) {
+            for (let x = 0; x < Map.mapW; x++) {
+                switch (this.gameMap[((y * Map.mapW) + x)]) {
+                    case 1:
+                        this.canvasContext.fillStyle = '#999999';
+                        break;
+                    default:
+                        this.canvasContext.fillStyle = '#eeeeee';
+                }
+                this.canvasContext.fillRect(x * Map.tileW, y * Map.tileH, Map.tileW, Map.tileH);
+            }
+        }
         console.log('works');
     }
 }
