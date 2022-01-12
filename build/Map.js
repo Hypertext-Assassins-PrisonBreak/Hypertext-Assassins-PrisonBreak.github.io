@@ -3,6 +3,7 @@ export default class Map {
     tileH = 50;
     mapW = 24;
     mapH = 11;
+    img;
     gameMap = [
         [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
         [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -28,12 +29,17 @@ export default class Map {
                         canvasContext.fillStyle = '#999999';
                         break;
                     default:
-                        canvasContext.fillStyle = '#EEEEEE';
+                        canvasContext.drawImage(this.image(), x * this.tileW, y * this.tileH);
                 }
                 canvasContext.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
             }
         }
         console.log('works');
+    }
+    image() {
+        this.img = new Image();
+        this.img.src = '../Assets/tile1.jpeg';
+        return this.img;
     }
 }
 //# sourceMappingURL=Map.js.map

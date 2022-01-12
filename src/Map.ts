@@ -7,6 +7,8 @@ export default class Map {
 
   public readonly mapH = 11;
 
+  private img : HTMLImageElement;
+
   public readonly gameMap:Array<Array<number>> = [
     [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1],
     [1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1],
@@ -46,11 +48,17 @@ export default class Map {
             canvasContext.fillStyle = '#999999';
             break;
           default:
-            canvasContext.fillStyle = '#EEEEEE';
+            canvasContext.drawImage(this.image(), x * this.tileW, y * this.tileH);
         }
         canvasContext.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
       }
     }
     console.log('works');
+  }
+
+  public image(): HTMLImageElement {
+    this.img = new Image();
+    this.img.src = '../Assets/tile1.jpeg';
+    return this.img;
   }
 }
