@@ -1,10 +1,14 @@
 export default class Character {
-  private xcoord: number;
+  public xcoord: number;
 
-  private ycoord: number;
+  public ycoord: number;
 
-
-
+  /**
+   * Constructing a new instance of this class
+   *
+   * @param xcoord x cordinate
+   * @param ycoord y cordinate
+   */
   public constructor(xcoord: number, ycoord: number) {
     this.xcoord = xcoord;
     this.ycoord = ycoord;

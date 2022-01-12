@@ -29,15 +29,15 @@ export default class Game {
    */
   public constructor(canvas: HTMLElement) {
     this.canvas = <HTMLCanvasElement>canvas;
-    this.canvas.width = window.innerWidth - 1;
-    this.canvas.height = window.innerHeight - 4;
+    this.canvas.width = Map.mapW * Map.tileW;
+    this.canvas.height = Map.mapH * Map.tileH;
   }
 
   /**
    * Game launch
    */
   public gamelaunch(): void {
-    this.map = new Map(this.canvas, this.canvasContext);
+    this.map = new Map(this.getCanvasContext());
     this.keyListener = new KeyListener();
     this.player = new Player(100, 100);
 
@@ -52,8 +52,7 @@ export default class Game {
     this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
     this.map.renderMap(this.getCanvasContext());
     this.renderFps(this.calculateFps());
-    this.calculateTimeDeltaTime();
-    this.processInput();
+    this.processPlayerInput();
     this.player.renderCharacter(this.getCanvasContext());
     requestAnimationFrame(() => this.renderFrame());
   }
@@ -114,19 +113,28 @@ export default class Game {
   /**
    * Handles any user input that has happened since the last call
    */
-  public processInput(): void {
-    // Move player
+  public processPlayerInput(): void {
+    let xvector: number = 0;
+    let yvector: number = 0;
+    // Read Key Presses
     if (this.keyListener.isKeyDown(KeyListener.KEY_LEFT) && true) {
       console.log('left');
+      xvector += -1;
     }
     if (this.keyListener.isKeyDown(KeyListener.KEY_UP) && true) {
       console.log('up');
+      yvector += -1;
     }
     if (this.keyListener.isKeyDown(KeyListener.KEY_RIGHT) && true) {
       console.log('right');
+      xvector += 1;
     }
     if (this.keyListener.isKeyDown(KeyListener.KEY_DOWN) && true) {
       console.log('down');
+      yvector += 1;
     }
+    const tdt: number = this.calculateTimeDeltaTime();
+    this.player.xcoord += xvector * tdt * 100;
+    this.player.ycoord += yvector * tdt * 100;
   }
 }

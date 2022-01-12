@@ -10,6 +10,4 @@ export default class Player extends Character {
   public constructor(xcoord: number, ycoord: number) {
     super(xcoord, ycoord);
   }
-
-
 }

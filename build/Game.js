@@ -13,11 +13,11 @@ export default class Game {
     lastUpdate = Date.now();
     constructor(canvas) {
         this.canvas = canvas;
-        this.canvas.width = window.innerWidth - 1;
-        this.canvas.height = window.innerHeight - 4;
+        this.canvas.width = Map.mapW * Map.tileW;
+        this.canvas.height = Map.mapH * Map.tileH;
     }
     gamelaunch() {
-        this.map = new Map(this.canvas, this.canvasContext);
+        this.map = new Map(this.getCanvasContext());
         this.keyListener = new KeyListener();
         this.player = new Player(100, 100);
         requestAnimationFrame(() => this.renderFrame());
@@ -27,8 +27,7 @@ export default class Game {
         this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
         this.map.renderMap(this.getCanvasContext());
         this.renderFps(this.calculateFps());
-        this.calculateTimeDeltaTime();
-        this.processInput();
+        this.processPlayerInput();
         this.player.renderCharacter(this.getCanvasContext());
         requestAnimationFrame(() => this.renderFrame());
     }
@@ -61,19 +60,28 @@ export default class Game {
         this.canvasContext.fillStyle = '#ff0000';
         this.canvasContext.fillText(`FPS: ${fps}`, 10, 20);
     }
-    processInput() {
+    processPlayerInput() {
+        let xvector = 0;
+        let yvector = 0;
         if (this.keyListener.isKeyDown(KeyListener.KEY_LEFT) && true) {
             console.log('left');
+            xvector += -1;
         }
         if (this.keyListener.isKeyDown(KeyListener.KEY_UP) && true) {
             console.log('up');
+            yvector += -1;
         }
         if (this.keyListener.isKeyDown(KeyListener.KEY_RIGHT) && true) {
             console.log('right');
+            xvector += 1;
         }
         if (this.keyListener.isKeyDown(KeyListener.KEY_DOWN) && true) {
             console.log('down');
+            yvector += 1;
         }
+        const tdt = this.calculateTimeDeltaTime();
+        this.player.xcoord += xvector * tdt * 100;
+        this.player.ycoord += yvector * tdt * 100;
     }
 }
 //# sourceMappingURL=Game.js.map
