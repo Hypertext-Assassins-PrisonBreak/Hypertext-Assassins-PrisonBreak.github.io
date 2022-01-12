@@ -51,6 +51,7 @@ export default class Map {
    * Draws the game to the canvas
    */
   public renderMap(): void {
+    /*
     // runs array and displays it on map
     for (let y = 0; y < Map.mapH; y++) {
       for (let x = 0; x < Map.mapW; x++) {
@@ -63,7 +64,7 @@ export default class Map {
         }
         this.canvasContext.fillRect(x * Map.tileW, y * Map.tileH, Map.tileW, Map.tileH);
       }
-    }
+    } */
     console.log('works');
   }
 }
