@@ -62,7 +62,7 @@ export default class Map {
         canvasContext.fillStyle = '#999999';
         break;
       default:
-        canvasContext.fillStyle = '#eeeeee';
+        canvasContext.fillStyle = '#00ee00';
     }
     canvasContext.fillRect(x * this.tileW, y * this.tileH, this.tileW, this.tileH);
   }
