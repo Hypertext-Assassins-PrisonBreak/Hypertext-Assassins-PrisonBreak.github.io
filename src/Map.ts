@@ -7,7 +7,6 @@ export default class Map {
 
   private static readonly mapH = 22;
 
-
   private gameMap = [
     1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1,
     1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 1,
@@ -41,14 +40,13 @@ export default class Map {
    * Construc a new instance of this class
    *
    * @param canvas the canvas to render on
-   * @param canvasContext
+   * @param canvasContext the Canvas Context to render with
    */
   public constructor(canvas: HTMLElement, canvasContext: CanvasRenderingContext2D) {
     this.canvas = <HTMLCanvasElement>canvas;
-    this.canvasContext = this.canvas.getContext('2d');
+    this.canvasContext = canvasContext;
   }
 
-  // eslint-disable-next-line jsdoc/require-returns
   /**
    * Draws the game to the canvas
    */

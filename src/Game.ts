@@ -45,14 +45,26 @@ export default class Game {
     return this.canvasContext;
   }
 
-
-  public fps(): void {
-    let now = Date.now();
-    let dt = now - this.lastUpdate;
+  /**
+   * Calculating Time.DeltaTime
+   *
+   * @returns Time.DeltaTime
+   */
+  public calculateTimeDeltaTime(): number {
+    const now = Date.now();
+    const dt = now - this.lastUpdate;
     this.lastUpdate = now;
 
     console.log(dt / 1000);
+    return dt / 1000;
+  }
 
+  /**
+   * Calculating Frames Per Second
+   *
+   * @returns Frames Per Second
+   */
+  public calculateFps(): number {
     // calculates fps
     const msec = Math.floor(Date.now() / 1000);
     if (msec !== this.currentSecond) {
@@ -62,6 +74,18 @@ export default class Game {
     } else { this.frameCount += 1; }
 
     console.log(this.frameCount);
+    return this.framesLastSecond;
+  }
+
+  /**
+   * Rendering Frames Per Second
+   *
+   * @param fps Frames Per Second
+   */
+  public renderFps(fps: number): void {
+    this.canvasContext.font = 'bold 10pt sans-serif';
+    this.canvasContext.fillStyle = '#ff0000';
+    this.canvasContext.fillText(`FPS: ${fps}`, 10, 20);
   }
 
   /**
@@ -69,13 +93,10 @@ export default class Game {
    */
   public renderFrame(): void {
     this.getCanvasContext();
-    this.map.renderMap();
     this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
-    this.canvasContext.font = 'bold 10pt sans-serif';
-    this.canvasContext.fillStyle = '#ff0000';
-    this.canvasContext.fillText(`FPS: ${this.framesLastSecond}`, 10, 20);
-    this.fps();
-
+    this.map.renderMap();
+    this.renderFps(this.calculateFps());
+    this.calculateTimeDeltaTime();
     requestAnimationFrame(() => this.renderFrame());
   }
 }
