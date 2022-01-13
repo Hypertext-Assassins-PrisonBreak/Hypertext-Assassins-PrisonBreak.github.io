@@ -11,6 +11,7 @@ export default class Game {
     framesLastSecond = 0;
     frameCount = 0;
     lastUpdate = Date.now();
+    flag = false;
     constructor(canvas) {
         this.canvas = canvas;
         this.canvas.width = 24 * 50;
@@ -26,7 +27,10 @@ export default class Game {
     renderFrame() {
         this.player.processPlayerMovement(this.calculateTimeDeltaTime());
         if (this.player.processPlayerMovement(this.calculateTimeDeltaTime())) {
-            this.player.renderCharacter(this.getCanvasContext());
+            this.player.renderCharacter(this.getCanvasContext(), this.flag);
+            if (this.frameCount % 20 === 0) {
+                this.flag = !this.flag;
+            }
         }
         this.renderFps(this.calculateFps());
         requestAnimationFrame(() => this.renderFrame());

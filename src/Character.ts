@@ -29,10 +29,11 @@ export default class Character {
    *
    * @param canvasContext the Canvas Context to render with
    */
-  public renderCharacter(canvasContext: CanvasRenderingContext2D): void {
+  public renderCharacter(canvasContext: CanvasRenderingContext2D, flag: boolean): void {
     this.characterClear(canvasContext);
-    canvasContext.fillStyle = '#ff0000';
-    canvasContext.fillRect(this.xcoord, this.ycoord, this.collisionW, this.collisionH);
+    // canvasContext.fillStyle = '#ff0000';
+    // canvasContext.fillRect(this.xcoord, this.ycoord, this.collisionW, this.collisionH);
+    // canvasContext.drawImage();
   }
 
   /**

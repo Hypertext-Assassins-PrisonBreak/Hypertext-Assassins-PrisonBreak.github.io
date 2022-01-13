@@ -21,6 +21,8 @@ export default class Game {
 
   private lastUpdate = Date.now();
 
+  private flag: boolean = false;
+
   /**
    * Constructing a new instance of this class
    *
@@ -53,7 +55,10 @@ export default class Game {
   public renderFrame(): void {
     this.player.processPlayerMovement(this.calculateTimeDeltaTime());
     if (this.player.processPlayerMovement(this.calculateTimeDeltaTime())) {
-      this.player.renderCharacter(this.getCanvasContext());
+      this.player.renderCharacter(this.getCanvasContext(), this.flag);
+      if (this.frameCount % 20 === 0) {
+        this.flag = !this.flag;
+      }
     }
     this.renderFps(this.calculateFps());
     requestAnimationFrame(() => this.renderFrame());

@@ -9,10 +9,8 @@ export default class Character {
         this.ycoord = ycoord;
         this.map = map;
     }
-    renderCharacter(canvasContext) {
+    renderCharacter(canvasContext, flag) {
         this.characterClear(canvasContext);
-        canvasContext.fillStyle = '#ff0000';
-        canvasContext.fillRect(this.xcoord, this.ycoord, this.collisionW, this.collisionH);
     }
     characterClear(canvasContext) {
         const clearingCornerTLx = this.xcoord - 10;
