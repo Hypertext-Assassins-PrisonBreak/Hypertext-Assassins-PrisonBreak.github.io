@@ -18,7 +18,7 @@ export default class Game {
   // Array of all Assets Paths (first ten reserved for Tile Textures)
   private paths: Array<string> = [
     '../Assets/tile1.jpeg',
-    '../Assets/tile1.jpeg',
+    '../Assets/tile2.jpeg',
     'https://ecrespo210.files.wordpress.com/2013/01/grass.png',
     'https://opengameart.org/sites/default/files/styles/medium/public/textureStone_0.png',
     '',
@@ -127,14 +127,10 @@ export default class Game {
    * @param y y cordinate of Tile
    */
   public renderLevelTile(x: number, y: number): void {
-    // this.canvasContext.fillStyle = this.patterns[Level.gameLevel[y][x]];
-    // this.canvasContext.fillRect(x * Level.tileW, y * Level.tileH, Level.tileW, Level.tileH);
-    /**
-     * this.canvasContext.drawImage(this.assets[Level.gameLevel[y][x]],
-      x * Level.tileW, y * Level.tileH);
-     */
-    this.canvasContext.fillStyle = (Level.gameLevel[y][x] ? '#555555' : '#005500');
-    this.canvasContext.fillRect(x * Level.tileW, y * Level.tileH, Level.tileW, Level.tileH);
+    //console.log(this.patterns[Level.gameLevel[y][x]]);
+    //this.canvasContext.fillStyle = this.patterns[Level.gameLevel[y][x]];
+    //this.canvasContext.fillRect(x * Level.tileW, y * Level.tileH, Level.tileW, Level.tileH);
+    this.canvasContext.drawImage(this.assets[Level.gameLevel[y][x]], x * Level.tileW, y * Level.tileH);
   }
 
   /**

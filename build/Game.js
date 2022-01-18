@@ -10,7 +10,7 @@ export default class Game {
     canvasContext;
     paths = [
         '../Assets/tile1.jpeg',
-        '../Assets/tile1.jpeg',
+        '../Assets/tile2.jpeg',
         'https://ecrespo210.files.wordpress.com/2013/01/grass.png',
         'https://opengameart.org/sites/default/files/styles/medium/public/textureStone_0.png',
         '',
@@ -81,8 +81,7 @@ export default class Game {
         console.log('works');
     }
     renderLevelTile(x, y) {
-        this.canvasContext.fillStyle = (Level.gameLevel[y][x] ? '#555555' : '#005500');
-        this.canvasContext.fillRect(x * Level.tileW, y * Level.tileH, Level.tileW, Level.tileH);
+        this.canvasContext.drawImage(this.assets[Level.gameLevel[y][x]], x * Level.tileW, y * Level.tileH);
     }
     renderFrame() {
         this.processPlayerInput();
