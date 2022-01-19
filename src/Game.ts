@@ -1,6 +1,8 @@
 import Level from './Level.js';
 import KeyListener from './KeyListener.js';
 import Player from './Player.js';
+import Interactable from './Interactable.js';
+import Question from './Question';
 
 export default class Game {
   public level: Level;
@@ -31,7 +33,23 @@ export default class Game {
   // Map of all Assets
   private assets: Map<string, HTMLImageElement> = new Map<string, HTMLImageElement>();
 
-  private patterns: Array<CanvasPattern> = [];
+  // Map of all Questions
+  private questions: Map<string, Array<Question>> = new Map<string, Array<Question>>([
+    ['1,3', [new Question('What should you do when you see "click this link to get free toys"?',
+      ['Do not click that link.',
+        'Click on the link to get free toys.',
+        'Check the authenticity of the link first and then click on the page.'],
+      0, 'Correct', 'Wrong',
+      'Most of these sites are deceptive, and even a very reliable site with similar information is likely to make you pay extra, and you need to ignore these links when you see them.')]],
+    ['', [new Question('I am online and I got a message from my Internet service provider asking for my password. They say they need it to fix my account. Should I give it to them?',
+      ['Yes.',
+        'No.'],
+      1, 'Correct', 'Wrong',
+      'Internet service providers would never ask you for a password. You should never share your Internet password to anyone (even your best friends) other than your parents.')]],
+    ['', [new Question()]]]);
+
+  // Array of all Interactable instances
+  private interactables: Array<Interactable> = [];
 
   // Map of all keycodes and their states
   private controls: Map<number, boolean> = new Map<number, boolean>([
@@ -77,6 +95,12 @@ export default class Game {
 
     this.keyListener = new KeyListener();
     this.player = new Player(100, 100);
+
+    for (let y = 0; y < Level.levelH; y++) {
+      for (let x = 0; x < Level.levelW; x++) {
+        this.interactables.push(new Interactable(x, y));
+      }
+    }
   }
 
   /**
