@@ -8,39 +8,30 @@ export default class Game {
     canvasHTML;
     canvas;
     canvasContext;
-    paths = [
-        '../Assets/tile1.jpeg',
-        '../Assets/tile2.jpeg',
-        'https://ecrespo210.files.wordpress.com/2013/01/grass.png',
-        'https://opengameart.org/sites/default/files/styles/medium/public/textureStone_0.png',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '',
-        '../Assets/spriteWalkLeft1.png',
-        '../Assets/spriteWalkLeft2.png',
-        '../Assets/spriteWalkUp1.png',
-        '../Assets/spriteWalkUp2.png',
-        '../Assets/spriteWalkRight1.png',
-        '../Assets/spriteWalkRight2.png',
-        '../Assets/spriteWalkDown1.png',
-        '../Assets/spriteWalkDown2.png'
-    ];
-    assets = [];
+    paths = new Map([
+        ['tile0', '../Assets/tile1.jpeg'],
+        ['tile1', '../Assets/tile2.jpeg'],
+        ['player00', '../Assets/playerWalkLeft1.png'],
+        ['player01', '../Assets/playerWalkLeft2.png'],
+        ['player10', '../Assets/playerWalkUp1.png'],
+        ['player11', '../Assets/playerWalkUp2.png'],
+        ['player20', '../Assets/playerWalkRight1.png'],
+        ['player21', '../Assets/playerWalkRight2.png'],
+        ['player30', '../Assets/playerWalkDown1.png'],
+        ['player31', '../Assets/playerWalkDown2.png']
+    ]);
+    assets = new Map();
     patterns = [];
-    usedKeys = [
-        KeyListener.KEY_A,
-        KeyListener.KEY_W,
-        KeyListener.KEY_D,
-        KeyListener.KEY_S,
-        KeyListener.KEY_LEFT,
-        KeyListener.KEY_UP,
-        KeyListener.KEY_RIGHT,
-        KeyListener.KEY_DOWN
-    ];
-    controls = new Map();
+    controls = new Map([
+        [KeyListener.KEY_A, false],
+        [KeyListener.KEY_W, false],
+        [KeyListener.KEY_D, false],
+        [KeyListener.KEY_S, false],
+        [KeyListener.KEY_LEFT, false],
+        [KeyListener.KEY_UP, false],
+        [KeyListener.KEY_RIGHT, false],
+        [KeyListener.KEY_DOWN, false]
+    ]);
     movementControls = [];
     currentSecond = 0;
     framesLastSecond = 0;
@@ -53,20 +44,13 @@ export default class Game {
         this.canvas.width = Level.levelW * Level.tileW;
         this.canvas.height = Level.levelH * Level.tileH;
         this.canvasContext = this.canvas.getContext('2d');
-        for (let i = 0; i < this.paths.length; i++) {
+        this.paths.forEach((path, id) => {
             const image = new Image();
-            image.src = this.paths[i];
-            this.assets.push(image);
-        }
-        for (let i = 0; i < 2; i++) {
-            const pattern = this.canvasContext.createPattern(this.assets[i], 'repeat');
-            this.patterns.push(pattern);
-        }
+            image.src = path;
+            this.assets.set(id, image);
+        });
         this.keyListener = new KeyListener();
         this.player = new Player(100, 100);
-        for (let i = 0; i < this.usedKeys.length; i++) {
-            this.controls.set(this.usedKeys[i], false);
-        }
     }
     gameLaunch() {
         this.renderLevel();
@@ -78,10 +62,10 @@ export default class Game {
                 this.renderLevelTile(x, y);
             }
         }
-        console.log('works');
     }
     renderLevelTile(x, y) {
-        this.canvasContext.drawImage(this.assets[Level.gameLevel[y][x]], x * Level.tileW, y * Level.tileH);
+        const tileId = this.assets.get(`tile${Number(Level.gameLevel[y][x])}`);
+        this.canvasContext.drawImage(tileId, x * Level.tileW, y * Level.tileH);
     }
     renderFrame() {
         this.processPlayerInput();
@@ -95,30 +79,32 @@ export default class Game {
         requestAnimationFrame(() => this.renderFrame());
     }
     processPlayerInput() {
-        for (let i = 0; i < this.usedKeys.length; i++) {
-            this.controls.set(this.usedKeys[i], this.keyListener.isKeyDown(this.usedKeys[i]));
-        }
-        for (let i = 0; i < 4; i++) {
-            const primaryMovementInput = this.controls.get(this.usedKeys[i]);
-            const secondaryMovementInput = this.controls.get(this.usedKeys[i + 4]);
-            this.movementControls[i] = primaryMovementInput || secondaryMovementInput;
-        }
+        this.movementControls.fill(false);
+        let counter = 0;
+        this.controls.forEach((state, keycode) => {
+            this.controls.set(keycode, this.keyListener.isKeyDown(keycode));
+            this.movementControls[counter] ||= state;
+            counter += 1;
+            if (counter >= 4) {
+                counter = 0;
+            }
+        });
     }
     renderCharacter(player) {
         this.characterClear(player);
         let walking = new Image();
-        walking.src = '../Assets/spriteWalkDown1.png';
+        walking = this.assets.get('player30');
         if (player.xvector === -1) {
-            walking = (this.flag ? this.assets[10] : this.assets[10 + 1]);
+            walking = this.assets.get(`player0${this.flag ? '0' : '1'}`);
         }
         else if (player.xvector === 1) {
-            walking = (this.flag ? this.assets[14] : this.assets[14 + 1]);
+            walking = this.assets.get(`player2${this.flag ? '0' : '1'}`);
         }
         if (player.yvector === -1) {
-            walking = (this.flag ? this.assets[12] : this.assets[12 + 1]);
+            walking = this.assets.get(`player1${this.flag ? '0' : '1'}`);
         }
         else if (player.yvector === 1) {
-            walking = (this.flag ? this.assets[16] : this.assets[16 + 1]);
+            walking = this.assets.get(`player3${this.flag ? '0' : '1'}`);
         }
         this.canvasContext.drawImage(walking, player.xcoord, player.ycoord, player.characterW, player.characterH);
     }
@@ -140,7 +126,6 @@ export default class Game {
         const now = Date.now();
         const dt = now - this.lastUpdate;
         this.lastUpdate = now;
-        console.log(dt / 1000);
         return dt / 1000;
     }
     calculateFps() {
@@ -153,7 +138,6 @@ export default class Game {
         else {
             this.frameCount += 1;
         }
-        console.log(this.framesLastSecond);
         return this.framesLastSecond;
     }
     renderFps(fps) {
