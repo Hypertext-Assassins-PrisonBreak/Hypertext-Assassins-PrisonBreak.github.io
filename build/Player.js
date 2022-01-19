@@ -10,19 +10,15 @@ export default class Player extends Character {
         this.xvector = 0;
         this.yvector = 0;
         if (movementControls[0]) {
-            console.log('left');
             this.xvector += -1;
         }
         if (movementControls[1]) {
-            console.log('up');
             this.yvector += -1;
         }
         if (movementControls[2]) {
-            console.log('right');
             this.xvector += 1;
         }
         if (movementControls[3]) {
-            console.log('down');
             this.yvector += 1;
         }
         let dx = this.xvector;
@@ -48,7 +44,7 @@ export default class Player extends Character {
         }
         return false;
     }
-    playerCollisionCheck(xcoord, ycoord) {
+    playerCollisionCheck(xcoord = this.xcoord, ycoord = this.ycoord) {
         let isOnFreeSpot = true;
         for (let i = xcoord; i < xcoord + this.characterW; i++) {
             for (let j = ycoord; j < ycoord + this.characterH; j++) {

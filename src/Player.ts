@@ -28,19 +28,15 @@ export default class Player extends Character {
     this.yvector = 0;
     // Read Key Presses
     if (movementControls[0]) {
-      console.log('left');
       this.xvector += -1;
     }
     if (movementControls[1]) {
-      console.log('up');
       this.yvector += -1;
     }
     if (movementControls[2]) {
-      console.log('right');
       this.xvector += 1;
     }
     if (movementControls[3]) {
-      console.log('down');
       this.yvector += 1;
     }
     let dx: number = this.xvector;
@@ -77,7 +73,7 @@ export default class Player extends Character {
    * @param ycoord y cordinate of Player
    * @returns True is Player stands on free spot
    */
-  public playerCollisionCheck(xcoord: number, ycoord: number): boolean {
+  public playerCollisionCheck(xcoord: number = this.xcoord, ycoord: number = this.ycoord): boolean {
     let isOnFreeSpot: boolean = true;
     for (let i = xcoord; i < xcoord + this.characterW; i++) {
       for (let j = ycoord; j < ycoord + this.characterH; j++) {

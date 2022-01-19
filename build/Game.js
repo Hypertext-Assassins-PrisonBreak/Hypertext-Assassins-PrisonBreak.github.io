@@ -1,7 +1,7 @@
 import Level from './Level.js';
 import KeyListener from './KeyListener.js';
 import Player from './Player.js';
-import Question from './Question';
+import Question from './Question.js';
 export default class Game {
     level;
     keyListener;
@@ -36,7 +36,9 @@ export default class Game {
         [KeyListener.KEY_LEFT, false],
         [KeyListener.KEY_UP, false],
         [KeyListener.KEY_RIGHT, false],
-        [KeyListener.KEY_DOWN, false]
+        [KeyListener.KEY_DOWN, false],
+        [KeyListener.KEY_SPACE, false],
+        [KeyListener.KEY_ENTER, false]
     ]);
     movementControls = [];
     currentSecond = 0;
@@ -44,6 +46,7 @@ export default class Game {
     frameCount = 0;
     lastUpdate = Date.now();
     flag = false;
+    gameState = 0;
     constructor(canvasHTML) {
         this.canvasHTML = canvasHTML;
         this.canvas = (this.canvasHTML);
@@ -89,10 +92,20 @@ export default class Game {
         let counter = 0;
         this.controls.forEach((state, keycode) => {
             this.controls.set(keycode, this.keyListener.isKeyDown(keycode));
-            this.movementControls[counter] ||= state;
-            counter += 1;
-            if (counter >= 4) {
-                counter = 0;
+            if (this.gameState === 0) {
+                if (keycode
+                    === KeyListener.KEY_A || KeyListener.KEY_W
+                    || KeyListener.KEY_D || KeyListener.KEY_S
+                    || KeyListener.KEY_LEFT || KeyListener.KEY_UP
+                    || KeyListener.KEY_RIGHT || KeyListener.KEY_DOWN) {
+                    this.movementControls[counter] ||= state;
+                    counter += 1;
+                    if (counter >= 4) {
+                        counter = 0;
+                    }
+                }
+                if ((keycode === KeyListener.KEY_SPACE || KeyListener.KEY_ENTER)) {
+                }
             }
         });
     }

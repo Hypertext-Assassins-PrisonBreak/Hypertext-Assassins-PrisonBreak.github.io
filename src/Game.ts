@@ -2,7 +2,7 @@ import Level from './Level.js';
 import KeyListener from './KeyListener.js';
 import Player from './Player.js';
 import Interactable from './Interactable.js';
-import Question from './Question';
+import Question from './Question.js';
 
 export default class Game {
   public level: Level;
@@ -60,20 +60,24 @@ export default class Game {
     [KeyListener.KEY_LEFT, false],
     [KeyListener.KEY_UP, false],
     [KeyListener.KEY_RIGHT, false],
-    [KeyListener.KEY_DOWN, false]]);
+    [KeyListener.KEY_DOWN, false],
+    [KeyListener.KEY_SPACE, false],
+    [KeyListener.KEY_ENTER, false]]);
 
   // Array of all directions in which player moves (0 - west, 1 - north, 2 - east, 3 - south)
   private movementControls: Array<boolean> = [];
 
-  private currentSecond = 0;
+  private currentSecond: number = 0;
 
-  private framesLastSecond = 0;
+  private framesLastSecond: number = 0;
 
-  private frameCount = 0;
+  private frameCount: number = 0;
 
-  private lastUpdate = Date.now();
+  private lastUpdate: number = Date.now();
 
   private flag: boolean = false;
+
+  private gameState: number = 0;
 
   /**
    * Constructing a new instance of this class
@@ -153,10 +157,25 @@ export default class Game {
     let counter: number = 0;
     this.controls.forEach((state: boolean, keycode: number) => {
       this.controls.set(keycode, this.keyListener.isKeyDown(keycode));
-      this.movementControls[counter] ||= state;
-      counter += 1;
-      if (counter >= 4) {
-        counter = 0;
+
+      // Input of Regular Game State
+      if (this.gameState === 0) {
+        // Processing Player Movement Input
+        if (keycode
+          === KeyListener.KEY_A || KeyListener.KEY_W
+          || KeyListener.KEY_D || KeyListener.KEY_S
+          || KeyListener.KEY_LEFT || KeyListener.KEY_UP
+          || KeyListener.KEY_RIGHT || KeyListener.KEY_DOWN) {
+          this.movementControls[counter] ||= state;
+          counter += 1;
+          if (counter >= 4) {
+            counter = 0;
+          }
+        }
+        // Processing Player Interaction Input
+        if ((keycode === KeyListener.KEY_SPACE || KeyListener.KEY_ENTER)) {
+          // TODO;
+        }
       }
     });
   }
