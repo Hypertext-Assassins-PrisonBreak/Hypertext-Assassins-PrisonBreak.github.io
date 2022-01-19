@@ -54,7 +54,7 @@ export default class Player extends Character {
             for (let j = ycoord; j < ycoord + this.characterH; j++) {
                 const collisionTestedTileY = Math.floor(j / Level.tileH);
                 const collisionTestedTileX = Math.floor(i / Level.tileW);
-                if (Level.gameLevel[collisionTestedTileY][collisionTestedTileX] !== 0) {
+                if (Level.gameLevel[collisionTestedTileY][collisionTestedTileX] === 1) {
                     isOnFreeSpot = false;
                 }
             }

@@ -9,9 +9,14 @@ export default class Interactable {
 
   /**
    * Constructing a new instance of this class
+   *
+   * @param tileX
+   * @param tileY
+   * @param questions
    */
-  public constructor(tileX: number, tileY: number) {
+  public constructor(tileX: number, tileY: number, questions: Array<Question>) {
     this.tileX = tileX;
-    this.tileY = tileX;
+    this.tileY = tileY;
+    this.questions = questions;
   }
 }

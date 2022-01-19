@@ -1,6 +1,7 @@
 import Level from './Level.js';
 import KeyListener from './KeyListener.js';
 import Player from './Player.js';
+import Question from './Question';
 export default class Game {
     level;
     keyListener;
@@ -21,7 +22,12 @@ export default class Game {
         ['player31', '../Assets/playerWalkDown2.png']
     ]);
     assets = new Map();
-    patterns = [];
+    questions = new Map([
+        ['1,3', [new Question('What should you do when you see "click this link to get free toys"?', ['Do not click that link.', 'Click on the link to get free toys.', 'Check the authenticity of the link first and then click on the page.'], 0, 'Correct', 'Wrong', 'Most of these sites are deceptive, and even a very reliable site with similar information is likely to make you pay extra, and you need to ignore these links when you see them.')]],
+        ['4,1', [new Question('I am online and I got a message from my Internet service provider asking for my password. They say they need it to fix my account. Should I give it to them?', ['Yes.', 'No.'], 1, 'Correct', 'Wrong', 'Internet service providers would never ask you for a password. You should never share your Internet password to anyone (even your best friends) other than your parents.')]],
+        ['4,3', [new Question('Who should you accept friend requests from online?', ['Anyone.', 'A friend of a friend.', 'Only from people you definitely know.'], 2, 'Correct', 'Wrong', 'You should only accept a friend request from people who you definitely know. Never accept friend requests from strangers or anybody you are unsure of.')]]
+    ]);
+    interactables = [];
     controls = new Map([
         [KeyListener.KEY_A, false],
         [KeyListener.KEY_W, false],
