@@ -1,5 +1,7 @@
 import Character from './Character.js';
-import Level from './Level.js';
+import Levels from '../data/Levels.js';
+import Interactables from '../data/Interactables.js';
+import Interactable from './Interactable.js';
 
 export default class Player extends Character {
   public xvector: number;
@@ -77,13 +79,38 @@ export default class Player extends Character {
     let isOnFreeSpot: boolean = true;
     for (let i = xcoord; i < xcoord + this.characterW; i++) {
       for (let j = ycoord; j < ycoord + this.characterH; j++) {
-        const collisionTestedTileY = Math.floor(j / Level.tileH);
-        const collisionTestedTileX = Math.floor(i / Level.tileW);
-        if (Level.gameLevel[collisionTestedTileY][collisionTestedTileX] === 1) {
+        const collisionTestedTileX = Math.floor(i / Levels.tileW);
+        const collisionTestedTileY = Math.floor(j / Levels.tileH);
+        if (Levels.gameLevels.get('level0')[collisionTestedTileY][collisionTestedTileX] >= 20) {
           isOnFreeSpot = false;
         }
       }
     }
     return isOnFreeSpot;
+  }
+
+  /**
+   * Interaction check for Player Collision Box
+   *
+   * @param xcoord x cordinate of Player
+   * @param ycoord y cordinate of Player
+   * @returns id of an adjacent Interactable or ''
+   */
+  public playerInteractCheck(xcoord: number = this.xcoord, ycoord: number = this.ycoord): string {
+    let interactableID: string = '';
+    Interactables.interactables.forEach((interactable: Interactable, id: string) => {
+      for (let i = xcoord; i < xcoord + this.characterW; i++) {
+        for (let j = ycoord; j < ycoord + this.characterH; j++) {
+          const collisionTestedTileX = Math.floor(i / Levels.tileW);
+          const collisionTestedTileY = Math.floor(j / Levels.tileH);
+          if (collisionTestedTileX === interactable.tileX
+            && collisionTestedTileY === interactable.tileY) {
+            interactableID = id;
+            return;
+          }
+        }
+      }
+    });
+    return interactableID;
   }
 }

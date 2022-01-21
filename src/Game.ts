@@ -1,12 +1,11 @@
-import Level from './Level.js';
+import Levels from './data/Levels.js';
+import Questions from './data/Questions.js';
+import Interactables from './data/Interactables.js';
 import KeyListener from './KeyListener.js';
-import Player from './Player.js';
-import Interactable from './Interactable.js';
-import Question from './Question.js';
+import Player from './types/Player.js';
+import Interactable from './types/Interactable.js';
 
 export default class Game {
-  public level: Level;
-
   public keyListener: KeyListener;
 
   private player: Player;
@@ -32,24 +31,6 @@ export default class Game {
 
   // Map of all Assets
   private assets: Map<string, HTMLImageElement> = new Map<string, HTMLImageElement>();
-
-  // Map of all Questions
-  private questions: Map<string, Array<Question>> = new Map<string, Array<Question>>([
-    ['1,3', [new Question('What should you do when you see "click this link to get free toys"?',
-      ['Do not click that link.', 'Click on the link to get free toys.', 'Check the authenticity of the link first and then click on the page.'],
-      0, 'Correct', 'Wrong',
-      'Most of these sites are deceptive, and even a very reliable site with similar information is likely to make you pay extra, and you need to ignore these links when you see them.')]],
-    ['4,1', [new Question('I am online and I got a message from my Internet service provider asking for my password. They say they need it to fix my account. Should I give it to them?',
-      ['Yes.', 'No.'],
-      1, 'Correct', 'Wrong',
-      'Internet service providers would never ask you for a password. You should never share your Internet password to anyone (even your best friends) other than your parents.')]],
-    ['4,3', [new Question('Who should you accept friend requests from online?',
-      ['Anyone.', 'A friend of a friend.', 'Only from people you definitely know.'],
-      2, 'Correct', 'Wrong',
-      'You should only accept a friend request from people who you definitely know. Never accept friend requests from strangers or anybody you are unsure of.')]]]);
-
-  // Array of all Interactable instances
-  private interactables: Array<Interactable> = [];
 
   // Map of all keycodes and their states
   private controls: Map<number, boolean> = new Map<number, boolean>([
@@ -87,8 +68,8 @@ export default class Game {
   public constructor(canvasHTML: HTMLElement) {
     this.canvasHTML = canvasHTML;
     this.canvas = <HTMLCanvasElement>(this.canvasHTML);
-    this.canvas.width = Level.levelW * Level.tileW;
-    this.canvas.height = Level.levelH * Level.tileH;
+    this.canvas.width = Levels.levelW * Levels.tileW;
+    this.canvas.height = Levels.levelH * Levels.tileH;
     this.canvasContext = this.canvas.getContext('2d');
 
     this.paths.forEach((path: string, id: string) => {
@@ -114,8 +95,8 @@ export default class Game {
    */
   public renderLevel(): void {
     // runs array and displays it on level
-    for (let y = 0; y < Level.levelH; y++) {
-      for (let x = 0; x < Level.levelW; x++) {
+    for (let y = 0; y < Levels.levelH; y++) {
+      for (let x = 0; x < Levels.levelW; x++) {
         this.renderLevelTile(x, y);
       }
     }
@@ -128,8 +109,8 @@ export default class Game {
    * @param y y cordinate of Tile
    */
   public renderLevelTile(x: number, y: number): void {
-    const tileId = this.assets.get(`tile${Number(Level.gameLevel[y][x])}`);
-    this.canvasContext.drawImage(tileId, x * Level.tileW, y * Level.tileH);
+    const tileId = this.assets.get(`tile${Number(Levels.gameLevels.get('level0')[y][x]) / 10 - 1}`);
+    this.canvasContext.drawImage(tileId, x * Levels.tileW, y * Levels.tileH);
   }
 
   /**
@@ -154,27 +135,27 @@ export default class Game {
    */
   public processPlayerInput(): void {
     this.movementControls.fill(false);
-    let counter: number = 0;
     this.controls.forEach((state: boolean, keycode: number) => {
       this.controls.set(keycode, this.keyListener.isKeyDown(keycode));
 
       // Input of Regular Game State
       if (this.gameState === 0) {
-        // Processing Player Movement Input
-        if (keycode
-          === KeyListener.KEY_A || KeyListener.KEY_W
-          || KeyListener.KEY_D || KeyListener.KEY_S
-          || KeyListener.KEY_LEFT || KeyListener.KEY_UP
-          || KeyListener.KEY_RIGHT || KeyListener.KEY_DOWN) {
-          this.movementControls[counter] ||= state;
-          counter += 1;
-          if (counter >= 4) {
-            counter = 0;
-          }
+        if (keycode === KeyListener.KEY_A || keycode === KeyListener.KEY_LEFT) {
+          this.movementControls[0] ||= state;
+        }
+        if (keycode === KeyListener.KEY_W || keycode === KeyListener.KEY_UP) {
+          this.movementControls[1] ||= state;
+        }
+        if (keycode === KeyListener.KEY_D || keycode === KeyListener.KEY_RIGHT) {
+          this.movementControls[2] ||= state;
+        }
+        if (keycode === KeyListener.KEY_S || keycode === KeyListener.KEY_DOWN) {
+          this.movementControls[3] ||= state;
         }
         // Processing Player Interaction Input
         if ((keycode === KeyListener.KEY_SPACE || KeyListener.KEY_ENTER)) {
-          // TODO;
+          const interactableID: string = this.player.playerInteractCheck();
+          console.log(Interactables.interactables.get(interactableID));
         }
       }
     });
@@ -221,10 +202,10 @@ export default class Game {
 
     this.canvasContext.clearRect(clearingCornerTLx, clearingCornerTLy, clearingW, clearingH);
 
-    for (let i = Math.floor(clearingCornerTLy / Level.tileH);
-      i <= Math.floor(clearingCornerBRy / Level.tileH); i++) {
-      for (let j = Math.floor(clearingCornerTLx / Level.tileW);
-        j <= Math.floor(clearingCornerBRx / Level.tileW); j++) {
+    for (let i = Math.floor(clearingCornerTLy / Levels.tileH);
+      i <= Math.floor(clearingCornerBRy / Levels.tileH); i++) {
+      for (let j = Math.floor(clearingCornerTLx / Levels.tileW);
+        j <= Math.floor(clearingCornerBRx / Levels.tileW); j++) {
         this.renderLevelTile(j, i);
       }
     }

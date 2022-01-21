@@ -1,5 +1,6 @@
 import Character from './Character.js';
-import Level from './Level.js';
+import Levels from '../data/Levels.js';
+import Interactables from '../data/Interactables.js';
 export default class Player extends Character {
     xvector;
     yvector;
@@ -48,14 +49,31 @@ export default class Player extends Character {
         let isOnFreeSpot = true;
         for (let i = xcoord; i < xcoord + this.characterW; i++) {
             for (let j = ycoord; j < ycoord + this.characterH; j++) {
-                const collisionTestedTileY = Math.floor(j / Level.tileH);
-                const collisionTestedTileX = Math.floor(i / Level.tileW);
-                if (Level.gameLevel[collisionTestedTileY][collisionTestedTileX] === 1) {
+                const collisionTestedTileX = Math.floor(i / Levels.tileW);
+                const collisionTestedTileY = Math.floor(j / Levels.tileH);
+                if (Levels.gameLevels.get('level0')[collisionTestedTileY][collisionTestedTileX] >= 20) {
                     isOnFreeSpot = false;
                 }
             }
         }
         return isOnFreeSpot;
+    }
+    playerInteractCheck(xcoord = this.xcoord, ycoord = this.ycoord) {
+        let interactableID = '';
+        Interactables.interactables.forEach((interactable, id) => {
+            for (let i = xcoord; i < xcoord + this.characterW; i++) {
+                for (let j = ycoord; j < ycoord + this.characterH; j++) {
+                    const collisionTestedTileX = Math.floor(i / Levels.tileW);
+                    const collisionTestedTileY = Math.floor(j / Levels.tileH);
+                    if (collisionTestedTileX === interactable.tileX
+                        && collisionTestedTileY === interactable.tileY) {
+                        interactableID = id;
+                        return;
+                    }
+                }
+            }
+        });
+        return interactableID;
     }
 }
 //# sourceMappingURL=Player.js.map
