@@ -27,7 +27,10 @@ export default class Game {
     ['player20', '../Assets/playerWalkRight1.png'],
     ['player21', '../Assets/playerWalkRight2.png'],
     ['player30', '../Assets/playerWalkDown1.png'],
-    ['player31', '../Assets/playerWalkDown2.png']]);
+    ['player31', '../Assets/playerWalkDown2.png'],
+    ['interactableWestAdjacent', '../Assets/pc_side_left.png'],
+    ['interactableNorthAdjacent', '../Assets/pc_front.png'],
+    ['interactableEastAdjacent', '../Assets/pc_side_right.png']]);
 
   // Map of all Assets
   private assets: Map<string, HTMLImageElement> = new Map<string, HTMLImageElement>();
@@ -43,10 +46,14 @@ export default class Game {
     [KeyListener.KEY_RIGHT, false],
     [KeyListener.KEY_DOWN, false],
     [KeyListener.KEY_SPACE, false],
-    [KeyListener.KEY_ENTER, false]]);
+    [KeyListener.KEY_ENTER, false],
+    [KeyListener.KEY_ESC, false]]);
 
   // Array of all directions in which player moves (0 - west, 1 - north, 2 - east, 3 - south)
   private movementControls: Array<boolean> = [];
+
+  // Interactable that player interacts with
+  private interactedObject: Interactable;
 
   private currentSecond: number = 0;
 
@@ -56,9 +63,28 @@ export default class Game {
 
   private lastUpdate: number = Date.now();
 
+  // True if the Player Character stands on the other foot
   private flag: boolean = false;
 
+  // Current Game state
   private gameState: number = 0;
+
+  // The Pop-up percentage size in relation to Canvas Size
+  private popupRenderProgress: number = 0;
+
+  private popopCenterX: number;
+
+  private popopCenterY: number;
+
+  private popupCornerTLX: number;
+
+  private popupCornerTLY: number;
+
+  private popupCornerBRX: number;
+
+  private popupCornerBRY: number;
+
+  private popupContentRendered: boolean = false;
 
   /**
    * Constructing a new instance of this class
@@ -86,6 +112,7 @@ export default class Game {
    * Game Launch
    */
   public gameLaunch(): void {
+    this.gameState = 0;
     this.renderLevel();
     requestAnimationFrame(() => this.renderFrame());
   }
@@ -109,24 +136,77 @@ export default class Game {
    * @param y y cordinate of Tile
    */
   public renderLevelTile(x: number, y: number): void {
-    const tileId = this.assets.get(`tile${Number(Levels.gameLevels.get('level0')[y][x]) / 10 - 1}`);
-    this.canvasContext.drawImage(tileId, x * Levels.tileW, y * Levels.tileH);
+    // Rendering Tile
+    const tileId: number = Levels.gameLevels.get('level0')[y][x];
+    const tileImage: HTMLImageElement = this.assets.get(`tile${Number(tileId / 10 - 1)}`);
+    this.canvasContext.drawImage(tileImage, x * Levels.tileW, y * Levels.tileH);
+
+    let ifIntereactableTile: boolean = false;
+    Interactables.interactables.forEach((interactable: Interactable, id: string) => {
+      ifIntereactableTile ||= interactable.tileX === x && interactable.tileY === y;
+    });
+
+    // Rendering Interactable
+    if (ifIntereactableTile) {
+      let westAdjacent: boolean = false;
+      let northAdjacent: boolean = false;
+      let eastAdjacent: boolean = false;
+      if (x > 0) {
+        const westernTileId: number = Levels.gameLevels.get('level0')[y][x - 1];
+        westAdjacent = westernTileId >= 20;
+      }
+      if (y > 0) {
+        const northenTileId: number = Levels.gameLevels.get('level0')[y - 1][x];
+        northAdjacent = northenTileId >= 20;
+      }
+      if (x < Levels.levelW) {
+        const easternTileId: number = Levels.gameLevels.get('level0')[y][x + 1];
+        eastAdjacent = easternTileId >= 20;
+      }
+
+      let interactableImage: HTMLImageElement;
+
+      if (westAdjacent) {
+        interactableImage = this.assets.get('interactableWestAdjacent');
+      }
+      if (northAdjacent) {
+        interactableImage = this.assets.get('interactableNorthAdjacent');
+      }
+      if (eastAdjacent) {
+        interactableImage = this.assets.get('interactableEastAdjacent');
+      }
+
+      this.canvasContext.drawImage(interactableImage, x * Levels.tileW, y * Levels.tileH);
+    }
   }
 
   /**
    * Rendering of a Frame
    */
   public renderFrame(): void {
-    this.processPlayerInput();
-
-    if (this.player.processPlayerMovement(this.movementControls, this.calculateTimeDeltaTime())) {
-      this.renderCharacter(this.player);
-      if (this.frameCount % 20 === 0) {
-        this.flag = !this.flag;
+    if (this.gameState === 0) {
+      this.processPlayerInput();
+      if (this.player.processPlayerMovement(this.movementControls, this.calculateTimeDeltaTime())) {
+        this.renderCharacter(this.player);
+        if (this.frameCount % 20 === 0) {
+          this.flag = !this.flag;
+        }
       }
+    } else if (this.gameState === 1) {
+      this.renderPopupOpening();
+    } else if (this.gameState === 2) {
+      if (!this.popupContentRendered) {
+        this.renderPopupContent();
+        this.popupContentRendered = true;
+      }
+      this.processPlayerInput();
+    } else if (this.gameState === 3) {
+      this.popupContentRendered = false;
+      this.renderPopupClosing();
     }
 
     this.renderFps(this.calculateFps());
+    this.calculateTimeDeltaTime();
     requestAnimationFrame(() => this.renderFrame());
   }
 
@@ -153,12 +233,97 @@ export default class Game {
           this.movementControls[3] ||= state;
         }
         // Processing Player Interaction Input
-        if ((keycode === KeyListener.KEY_SPACE || KeyListener.KEY_ENTER)) {
-          const interactableID: string = this.player.playerInteractCheck();
-          console.log(Interactables.interactables.get(interactableID));
+        if (state && (keycode === KeyListener.KEY_SPACE || keycode === KeyListener.KEY_ENTER)) {
+          this.interact();
+        }
+      }
+      if (this.gameState === 2) {
+        if (state && keycode === KeyListener.KEY_ESC) {
+          this.gameState = 3;
         }
       }
     });
+  }
+
+  /**
+   * Processing Player interaction
+   */
+  public interact(): void {
+    const interactedObjectID: string = this.player.playerInteractCheck();
+    this.interactedObject = Interactables.interactables.get(interactedObjectID);
+    if (typeof this.interactedObject !== 'undefined') {
+      this.gameState = 1;
+    }
+  }
+
+  /**
+   * Rendering of Popup opening
+   */
+  public renderPopupOpening(): void {
+    this.recalculatePopupDimensions();
+    this.renderPopupFrame();
+
+    if (this.popupRenderProgress < 60) {
+      this.popupRenderProgress += this.calculateTimeDeltaTime() * 80;
+    } else {
+      this.popupRenderProgress = 60;
+      this.gameState = 2;
+    }
+  }
+
+  /**
+   * Rendering of Popup closing
+   */
+  public renderPopupClosing(): void {
+    this.renderLevel();
+    this.renderCharacter(this.player);
+
+    this.recalculatePopupDimensions();
+    this.renderPopupFrame();
+
+    if (this.popupRenderProgress > 0) {
+      this.popupRenderProgress -= this.calculateTimeDeltaTime() * 80;
+    } else {
+      this.canvasContext.clearRect(this.popopCenterX - 20, this.popopCenterY - 20, 40, 40);
+      this.renderLevel();
+      this.popupRenderProgress = 0;
+      this.gameState = 0;
+    }
+  }
+
+  /**
+   * Rendering of Popup Content
+   */
+  public renderPopupContent(): void {
+    for (let i = 0; i < this.interactedObject.questions.length; i++) {
+      console.log(this.interactedObject.questions);
+    }
+  }
+
+  /**
+   * Recalculating the Popup dimensions
+   */
+  public recalculatePopupDimensions(): void {
+    this.popopCenterX = this.canvas.width / 2;
+    this.popopCenterY = this.canvas.height / 2;
+    this.popupCornerTLX = this.popopCenterX - (this.popupRenderProgress / 100) * this.popopCenterX;
+    this.popupCornerTLY = this.popopCenterY - (this.popupRenderProgress / 100) * this.popopCenterY;
+    this.popupCornerBRX = (this.popupRenderProgress / 100) * this.canvas.width;
+    this.popupCornerBRY = (this.popupRenderProgress / 100) * this.canvas.height;
+  }
+
+  /**
+   * Rendering Popup frame
+   */
+  public renderPopupFrame(): void {
+    this.canvasContext.fillStyle = '#000000';
+    this.canvasContext.fillRect(this.popupCornerTLX, this.popupCornerTLY,
+      this.popupCornerBRX, this.popupCornerBRY);
+
+    this.canvasContext.strokeStyle = '#555555';
+    this.canvasContext.lineWidth = 15;
+    this.canvasContext.strokeRect(this.popupCornerTLX - 1, this.popupCornerTLY - 1,
+      this.popupCornerBRX + 1, this.popupCornerBRY + 1);
   }
 
   /**
@@ -171,6 +336,11 @@ export default class Game {
     let walking = new Image();
 
     walking = this.assets.get('player30');
+
+    if (player.yvector === 1) {
+      walking = this.assets.get(`player3${this.flag ? '0' : '1'}`);
+    }
+
     if (player.xvector === -1) {
       walking = this.assets.get(`player0${this.flag ? '0' : '1'}`);
     } else if (player.xvector === 1) {
@@ -179,8 +349,6 @@ export default class Game {
 
     if (player.yvector === -1) {
       walking = this.assets.get(`player1${this.flag ? '0' : '1'}`);
-    } else if (player.yvector === 1) {
-      walking = this.assets.get(`player3${this.flag ? '0' : '1'}`);
     }
 
     this.canvasContext.drawImage(walking, player.xcoord, player.ycoord,
@@ -246,7 +414,7 @@ export default class Game {
    */
   public renderFps(fps: number): void {
     this.canvasContext.font = 'bold 10pt sans-serif';
-    this.canvasContext.clearRect(0, 0, 100, 30);
+    this.canvasContext.clearRect(0, 0, 75, 30);
     this.canvasContext.fillStyle = '#ff0000';
     this.canvasContext.fillText(`FPS: ${fps}`, 10, 20);
   }
