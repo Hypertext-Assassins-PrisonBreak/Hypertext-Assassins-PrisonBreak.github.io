@@ -2,7 +2,6 @@ import Character from './Character.js';
 import Levels from '../data/Levels.js';
 import Interactables from '../data/Interactables.js';
 import Interactable from './Interactable.js';
-import Doors from '../data/Doors.js';
 import Door from '../types/Door.js';
 
 export default class Player extends Character {

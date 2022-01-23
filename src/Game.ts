@@ -5,7 +5,6 @@ import KeyListener from './KeyListener.js';
 import Player from './types/Player.js';
 import Interactable from './types/Interactable.js';
 import Question from './types/Question.js';
-import Doors from './data/Doors.js';
 import Door from './types/Door.js';
 
 export default class Game {
@@ -95,9 +94,6 @@ export default class Game {
   private popupCornerBRY: number;
 
   private popupContentRendered: boolean = false;
-
-  // Instance containing a map of all Doors
-  private doors: Doors = new Doors();
 
   // Instance containing a map of all Interactables
   private interactables: Interactables = new Interactables();
@@ -307,22 +303,22 @@ export default class Game {
           if (this.selectionChangeCooldown <= 0) {
             if (keycode === KeyListener.KEY_A || keycode === KeyListener.KEY_LEFT) {
               this.selectedMenuOption -= 1;
-              this.selectionChangeCooldown = 50;
+              this.selectionChangeCooldown = 40;
               this.renderPopupContent();
             }
             if (keycode === KeyListener.KEY_W || keycode === KeyListener.KEY_UP) {
               this.selectedMenuOption -= 1;
-              this.selectionChangeCooldown = 50;
+              this.selectionChangeCooldown = 40;
               this.renderPopupContent();
             }
             if (keycode === KeyListener.KEY_D || keycode === KeyListener.KEY_RIGHT) {
               this.selectedMenuOption += 1;
-              this.selectionChangeCooldown = 50;
+              this.selectionChangeCooldown = 40;
               this.renderPopupContent();
             }
             if (keycode === KeyListener.KEY_S || keycode === KeyListener.KEY_DOWN) {
               this.selectedMenuOption += 1;
-              this.selectionChangeCooldown = 50;
+              this.selectionChangeCooldown = 40;
               this.renderPopupContent();
             }
           }
