@@ -29,7 +29,7 @@ export default class Game {
     ['player30', '../Assets/playerWalkDown1.png'],
     ['player31', '../Assets/playerWalkDown2.png'],
     ['interactableWestAdjacent', '../Assets/pc_side_left.png'],
-    ['interactableNorthAdjacent', '../Assets/pc_front.png'],
+    ['interactableNorthAdjacent', '../Assets/pc_front1.png'],
     ['interactableEastAdjacent', '../Assets/pc_side_right.png']]);
 
   // Map of all Assets
@@ -63,6 +63,9 @@ export default class Game {
 
   private lastUpdate: number = Date.now();
 
+  // Current Image of Player Character
+  private playerCharacterImage: HTMLImageElement;
+
   // True if the Player Character stands on the other foot
   private flag: boolean = false;
 
@@ -86,6 +89,9 @@ export default class Game {
 
   private popupContentRendered: boolean = false;
 
+  // Index of the current Question
+  private interactables: Interactables = new Interactables();
+
   /**
    * Constructing a new instance of this class
    *
@@ -103,6 +109,8 @@ export default class Game {
       image.src = path;
       this.assets.set(id, image);
     });
+
+    this.playerCharacterImage = this.assets.get('player30');
 
     this.keyListener = new KeyListener();
     this.player = new Player(100, 100);
@@ -141,8 +149,9 @@ export default class Game {
     const tileImage: HTMLImageElement = this.assets.get(`tile${Number(tileId / 10 - 1)}`);
     this.canvasContext.drawImage(tileImage, x * Levels.tileW, y * Levels.tileH);
 
+    // Checking if Tile has Interactable
     let ifIntereactableTile: boolean = false;
-    Interactables.interactables.forEach((interactable: Interactable, id: string) => {
+    this.interactables.interactables.forEach((interactable: Interactable, id: string) => {
       ifIntereactableTile ||= interactable.tileX === x && interactable.tileY === y;
     });
 
@@ -192,15 +201,21 @@ export default class Game {
           this.flag = !this.flag;
         }
       }
-    } else if (this.gameState === 1) {
+    }
+
+    if (this.gameState === 1) {
       this.renderPopupOpening();
-    } else if (this.gameState === 2) {
+    }
+
+    if (this.gameState === 2) {
       if (!this.popupContentRendered) {
         this.renderPopupContent();
         this.popupContentRendered = true;
       }
       this.processPlayerInput();
-    } else if (this.gameState === 3) {
+    }
+
+    if (this.gameState === 3) {
       this.popupContentRendered = false;
       this.renderPopupClosing();
     }
@@ -249,8 +264,8 @@ export default class Game {
    * Processing Player interaction
    */
   public interact(): void {
-    const interactedObjectID: string = this.player.playerInteractCheck();
-    this.interactedObject = Interactables.interactables.get(interactedObjectID);
+    const interactedObjectID: string = this.player.playerInteractCheck(this.interactables);
+    this.interactedObject = this.interactables.interactables.get(interactedObjectID);
     if (typeof this.interactedObject !== 'undefined') {
       this.gameState = 1;
     }
@@ -295,9 +310,7 @@ export default class Game {
    * Rendering of Popup Content
    */
   public renderPopupContent(): void {
-    for (let i = 0; i < this.interactedObject.questions.length; i++) {
-      console.log(this.interactedObject.questions);
-    }
+    console.log(this.interactedObject.questionsNL[0]);
   }
 
   /**
@@ -333,25 +346,22 @@ export default class Game {
    */
   public renderCharacter(player: Player): void {
     this.characterClear(player);
-    let walking = new Image();
-
-    walking = this.assets.get('player30');
 
     if (player.yvector === 1) {
-      walking = this.assets.get(`player3${this.flag ? '0' : '1'}`);
+      this.playerCharacterImage = this.assets.get(`player3${this.flag ? '0' : '1'}`);
     }
 
     if (player.xvector === -1) {
-      walking = this.assets.get(`player0${this.flag ? '0' : '1'}`);
+      this.playerCharacterImage = this.assets.get(`player0${this.flag ? '0' : '1'}`);
     } else if (player.xvector === 1) {
-      walking = this.assets.get(`player2${this.flag ? '0' : '1'}`);
+      this.playerCharacterImage = this.assets.get(`player2${this.flag ? '0' : '1'}`);
     }
 
     if (player.yvector === -1) {
-      walking = this.assets.get(`player1${this.flag ? '0' : '1'}`);
+      this.playerCharacterImage = this.assets.get(`player1${this.flag ? '0' : '1'}`);
     }
 
-    this.canvasContext.drawImage(walking, player.xcoord, player.ycoord,
+    this.canvasContext.drawImage(this.playerCharacterImage, player.xcoord, player.ycoord,
       player.characterW, player.characterH);
   }
 

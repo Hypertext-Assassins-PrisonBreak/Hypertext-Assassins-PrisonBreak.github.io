@@ -92,13 +92,15 @@ export default class Player extends Character {
   /**
    * Interaction check for Player Collision Box
    *
+   * @param interactables Instance containing a map of all Interactables
    * @param xcoord x cordinate of Player
    * @param ycoord y cordinate of Player
    * @returns id of an adjacent Interactable or ''
    */
-  public playerInteractCheck(xcoord: number = this.xcoord, ycoord: number = this.ycoord): string {
+  public playerInteractCheck(interactables: Interactables,
+    xcoord: number = this.xcoord, ycoord: number = this.ycoord): string {
     let interactableID: string = '';
-    Interactables.interactables.forEach((interactable: Interactable, id: string) => {
+    interactables.interactables.forEach((interactable: Interactable, id: string) => {
       for (let i = xcoord; i < xcoord + this.characterW; i++) {
         for (let j = ycoord; j < ycoord + this.characterH; j++) {
           const collisionTestedTileX = Math.floor(i / Levels.tileW);

@@ -123,5 +123,4 @@ export default class Questions {
         ['Show your teacher and say what has happened', 'Forward the photo onto other people', 'Save it to your phone so you can embarrass them again later', 'Laugh at the photo with your friends '],
         1, 'Correct', 'Wrong',
         'You should show your teacher the photo and tell them what has happened. Think about how you would feel if the picture was of you.')]]);
-
 }

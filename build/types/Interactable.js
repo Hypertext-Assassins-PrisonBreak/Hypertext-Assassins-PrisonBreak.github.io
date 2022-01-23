@@ -1,11 +1,17 @@
 export default class Interactable {
     tileX;
     tileY;
-    questions;
-    constructor(tileX, tileY, questions) {
+    questionsEN;
+    questionsNL;
+    answeredQuestions;
+    correctAnswers;
+    constructor(tileX, tileY, questionsEN, questionsNL, answeredQuestions = 0, correctAnswers = 0) {
         this.tileX = tileX;
         this.tileY = tileY;
-        this.questions = questions;
+        this.questionsEN = questionsEN;
+        this.questionsNL = questionsNL;
+        this.answeredQuestions = answeredQuestions;
+        this.correctAnswers = correctAnswers;
     }
 }
 //# sourceMappingURL=Interactable.js.map

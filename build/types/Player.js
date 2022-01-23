@@ -1,6 +1,5 @@
 import Character from './Character.js';
 import Levels from '../data/Levels.js';
-import Interactables from '../data/Interactables.js';
 export default class Player extends Character {
     xvector;
     yvector;
@@ -58,9 +57,9 @@ export default class Player extends Character {
         }
         return isOnFreeSpot;
     }
-    playerInteractCheck(xcoord = this.xcoord, ycoord = this.ycoord) {
+    playerInteractCheck(interactables, xcoord = this.xcoord, ycoord = this.ycoord) {
         let interactableID = '';
-        Interactables.interactables.forEach((interactable, id) => {
+        interactables.interactables.forEach((interactable, id) => {
             for (let i = xcoord; i < xcoord + this.characterW; i++) {
                 for (let j = ycoord; j < ycoord + this.characterH; j++) {
                     const collisionTestedTileX = Math.floor(i / Levels.tileW);
