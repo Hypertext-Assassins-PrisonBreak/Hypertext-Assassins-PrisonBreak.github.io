@@ -4,10 +4,10 @@ export default class Questions {
   // Map of all Questions
   public static readonly questionsEN: Map<string, Question> = new Map<string, Question>([
     ['question0',
-      new Question('What should you do when you see "click this link to get free toys"?',
-        ['Do not click that link.', 'Click on the link to get free toys.', 'Check the authenticity of the link first and then click on the page.'],
-        0, 'Correct', 'Wrong',
-        'Most of these sites are deceptive, and even a very reliable site with similar information is likely to make you pay extra, and you need to ignore these links when you see them.')],
+      new Question('I am in the middle of a chat session and someone says something really mean. Should I:',
+        ['Say something mean back?', 'Ask them to Apologize?', 'Do not respond; Tell an adult if it bothers me?'],
+        2, 'Correct', 'Wrong',
+        'As you apparently know, you should never respond to any messages that are mean or in any way makes you feel uncomfortable. It is not your fault if you get a message like that. If you get a message like this, tell your parents right away.')],
 
     ['question1',
       new Question('I am online and I got a message from my Internet service provider asking for my password. They say they need it to fix my account. Should I give it to them?',
@@ -16,94 +16,90 @@ export default class Questions {
         'Internet service providers would never ask you for a password. You should never share your Internet password to anyone (even your best friends) other than your parents.')],
 
     ['question2',
-      new Question('From whom should you accept friend requests?',
-        ['Anyone.', 'A friend of a friend.', 'Only from people you definitely know.'],
-        2, 'Correct', 'Wrong',
-        'You should only accept a friend request from people who you definitely know. Never accept friend requests from strangers or anybody you are unsure of.')],
-
-    ['question3',
-      new Question('I am in the middle of a chat session and someone says something really mean. Should I: ',
-        ['Say something mean back', 'Ask them to Apologize ', 'Do not respond and tell an adult it '],
-        2, 'Correct', 'Wrong',
-        'You should never respond to any messages that are mean or in any way make you feel uncomfortable. It is not your fault if you get a message like that.  If you get a message like this, tell your parents right away. ')],
-
-    ['question4',
       new Question('I met someone in a chat room who wants to get together. They live nearby.  Can I arrange a meeting? ',
         ['Yes, I should go out without asking.', 'No, I should first ask my parents and tell them that I met this person online. '],
         1, 'Correct', 'Wrong',
         'It is very important that you never agree to get together with someone you meet online without first checking with my parents. You never truly know who this person really is and can end up very dangerous. ')],
 
-    ['question5',
+    ['question3',
       new Question('If someone bullies you online what would be the best thing to do?',
         ['Do not respondand tell your parents. ', 'Respond with something mean too. ', 'Respond, but in a nice way.'],
         0, 'Correct', 'Wrong',
         'Stay calm and do not feed the bully. Sometimes the bullies just want you to freak out and retaliate so that they can make more fun of your reaction. Even if you say something nice, they can still find a way to be mean to you. But if you do not respond the bullies get bored.')],
 
-    ['question6',
-      new Question('When a website asks you to fill in your real name and ID number:',
-        ['First find out the reliability of the website and then fill in the relevant information.', 'Ignore website reliability and fill in directly', 'Fill in other peoples information'],
-        0, 'Correct', 'Wrong',
-        'When we encounter a website that asks you to fill in your ID information, we should repeatedly confirm the security of the website to ensure that the website is completely harmless and reliable before filling in your personal information, otherwise it is very likely to be misused by criminals.')],
-
-    ['question7',
+    ['question4',
       new Question('What should you do if a stranger asks you to send a picture of yourself to them?',
         ['Do not send any pictures and tell an adult straight away. ', 'Send the picture if you think you know them ', 'Send picture even though they are a stranger ', 'Ignore it'],
         0, 'Correct', 'Wrong',
         'You should never send pictures of yourself to a stranger as you do not know who they are or what they might do. If a stranger asks for a picture, refuse and tell an adult straight away. You should also never send a picture to somebody that you would not want anybody else to see. Even if you trust the person, it could still end up online or be shown to others.')],
 
-    ['question8',
+    ['question5',
+      new Question('From whom should you accept friend requests?',
+        ['Anyone.', 'A friend of a friend.', 'Only from people you definitely know.'],
+        2, 'Correct', 'Wrong',
+        'You should only accept a friend request from people who you definitely know. Never accept friend requests from strangers or anybody you are unsure of.')],
+
+    ['question6',
       new Question('If you post something on the internet, who may be able to see it? ',
         ['Only your friends.', 'Just yourself', 'Anyone', 'Only your family'],
         2, 'Correct', 'Wrong',
         'Anybody may be able to see what you post online. Speak to an adult and ask them to help you improve your online privacy.')],
 
-    ['question9',
+
+    ['question7',
+      new Question('Someone in your class has sent around an embarrassing photo of another classmate. What should you do with it? ',
+        ['Show your teacher and say what has happened', 'Forward the photo onto other people', 'Save it to your phone so you can embarrass them again later', 'Laugh at the photo with your friends '],
+        0, 'Correct', 'Wrong',
+        'You should show your teacher the photo and tell them what has happened. Think about how you would feel if the picture was of you.')],
+
+    ['question8',
       new Question('One of your friends has posted a video of you on the internet and you do not like it. You have asked them to take it down, but they have said no because it is funny. What should you do? ',
         ['Keep asking your friend until they take it down. ', 'Speak to an adult and say why you do not like it ', 'Leave it, you can not do anything else about it ', 'Post a video of them to get revenge. '],
         1, 'Correct', 'Wrong',
         'You should speak to an adult about what has happened and tell them that you do not like it. They can then try to get the video taken down. ')],
 
-    ['question10',
+    ['question9',
       new Question('Your friend tells you that she is talking to a boy online and she is going to meet him on the weekend. What should you do?',
         ['Volunteer to go with her ', 'Let her go on her own ', 'Tell an adult straight away ', 'Tell your other friends'],
         2, 'Correct', 'Wrong',
         'You must tell an adult straight away if somebody going to meet a person that they met online and have never met in person before. You should never meet people unless you know who they are for certain. ')],
 
-    ['question11',
+    ['question10',
       new Question('A classmate tells you that somebody has been calling him mean names on an online game. What should you do?',
         ['Tell your teacher or another adult ', 'Tell him to call the person mean names back', 'Tell him to just ignore it and let it go away ', 'Tell him to stop playing games for a while'],
         0, 'Correct', 'Wrong',
         'Calling somebody mean names online is cyberbullying. You should tell an adult about it and not ignore it. ')],
 
-    ['question12',
+    ['question11',
       new Question('Who can you share your passwords with? ',
         ['Your friends ', 'Nobody, you should keep them to yourself ', 'Your family ', 'Your teacher '],
         1, 'Correct', 'Wrong',
         'You should always keep your passwords to yourself. It could be dangerous if your password fell into the wrong hands ')],
 
-    ['question13',
+    ['question12',
       new Question('You have gone on a gaming website, and it asks you to download a link before you play. What should you do? ',
         ['Show the link to an adult and ask if it is safe ', 'Download it anyway ', 'Do not download it, it must be illegal ', 'Ask your friends what to do '],
         0, 'Correct', 'Wrong',
         'You should always speak to an adult if a website asks you to download something. You never know what it could be. ')],
 
-    ['question14',
+
+    ['question13',
       new Question('You need to create a password for a website. What should you use?',
         ['Your full name (e.g jacksmith) ', 'Part of your name and a number (e.g jack123) ', 'A random word, number and punctuation combination (e.g 1cer3am!) ', 'A nickname that your friends call you (e.g jumpingjacks) '],
         2, 'Correct', 'Wrong',
         'The strongest passwords have a combination of letters, numbers and punctuation. You should never use anything linked to your name because it is very easy to guess. ')],
 
-    ['question15',
+    ['question14',
       new Question('Sometimes you will see https:// or a lock symbol in front a web address. What does that mean? ',
-        ['I can not access the website ', 'The website needs a password ', 'It is not a kid friendly website', 'It means it is safer to enter personal information '],
+        ['I can not access the website ', 'The website needs a password ', 'It is not a kid friendly website', 'It means it is safer to enter personal information'],
         3, 'Correct', 'Wrong',
         'https:// or the lock symbol that is displayed sometimes in front of the web address implies that the website is safer.  It does not have to be in front of every website but if you enter personal information, you should make sure it is secured with https://.  ')],
 
-    ['question16',
-      new Question('Someone in your class has sent around an embarrassing photo of another classmate. What should you do with it? ',
-        ['Show your teacher and say what has happened', 'Forward the photo onto other people', 'Save it to your phone so you can embarrass them again later', 'Laugh at the photo with your friends '],
-        1, 'Correct', 'Wrong',
-        'You should show your teacher the photo and tell them what has happened. Think about how you would feel if the picture was of you.')]]);
+    ['question15',
+      new Question('You receive a new friend request from a person who does not have a profile picture, but you recognize the name as someone in your class. You:',
+        ['Delete it because you are to cool for friends', ' Accept it right away', 'Ask your classmate in person to make sure it was really them who sent the request', 'Send them a message asking who they are'],
+        2, 'Correct', 'Wrong',
+        'Be careful about who you add as a friend on any social media account. When you add a friend online they can access a lot of your personal information, including all your posted pictures. Remember to double check that the person you are adding is who they say they are. ')]]);
 
   public static readonly questionsNL: Map<string, Question> = new Map<string, Question>([
     ['question0',
@@ -139,7 +135,7 @@ export default class Questions {
     ['question5',
       new Question('Van wie moet je online vriendschapsverzoeken accepteren?',
         ['Iedereen', 'Een vriend van een vriend', 'Iemand die je denkt eerder te hebben ontmoet', 'Alleen van mensen die je kent'],
-        3, 'Correct', 'Wrong',
+        2, 'Correct', 'Wrong',
         'Accepteer alleen vriendschapsverzoeken van mensen die je kent. Accepteer nooit vriendschapsverzoeken van vreemden of iemand die je niet met zekerheid kent.')],
 
     ['question6',
@@ -197,8 +193,8 @@ export default class Questions {
         'https:// of het slotsymbool dat soms voor het webadres wordt weergegeven, geeft aan dat de website veiliger is. Het hoeft niet voor elke website te staan, maar als u persoonlijke informatie invoert, moet u ervoor zorgen dat deze is beveiligd met https://.')],
 
     ['question15',
-      new Question('Wat te doen als een e-mail zegt dat je een prijs hebt gewonnen?',
-        ['Negeer deze e-mail en blokkeer berichten van deze afzender', 'Laat haar alleen gaan', 'Vertel het meteen aan een volwassene', 'Vertel het je andere vrienden'],
-        1, 'Correct', 'Wrong',
-        'Je moet het meteen aan een volwassene vertellen als iemand een persoon gaat ontmoeten die hij of zij online heeft ontmoet. Je moet nooit mensen ontmoeten, tenzij je zeker weet wie ze zijn.')]]);
+      new Question('Je ontvangt een nieuw vriendschapsverzoek van een persoon die geen profielfoto heeft, maar je herkent de naam als iemand in je klas. U:',
+        ['Verwijder het omdat je te cool bent voor vrienden', 'Accepteer het meteen', 'Vraag je klasgenoot persoonlijk om er zeker van te zijn dat hij/zij het verzoek heeft verzonden', 'Stuur ze een bericht met de vraag wie ze zijn'],
+        2, 'Correct', 'Wrong',
+        'Wees voorzichtig met wie je toevoegt als vriend op een social media-account. Wanneer je online een vriend toevoegt, hebben ze toegang tot veel van je persoonlijke gegevens, inclusief al je geposte photos. Vergeet niet om te controleren of de persoon die u toevoegt, is wie hij zegt dat hij is.')]]);
 }
