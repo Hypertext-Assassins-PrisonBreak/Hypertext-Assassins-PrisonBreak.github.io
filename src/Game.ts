@@ -282,10 +282,10 @@ export default class Game {
     this.recalculatePopupDimensions();
     this.renderPopupFrame();
 
-    if (this.popupRenderProgress < 60) {
-      this.popupRenderProgress += this.calculateTimeDeltaTime() * 80;
+    if (this.popupRenderProgress < 80) {
+      this.popupRenderProgress += this.calculateTimeDeltaTime() * 180;
     } else {
-      this.popupRenderProgress = 60;
+      this.popupRenderProgress = 80;
       this.gameState = 2;
     }
   }
@@ -301,7 +301,7 @@ export default class Game {
     this.renderPopupFrame();
 
     if (this.popupRenderProgress > 0) {
-      this.popupRenderProgress -= this.calculateTimeDeltaTime() * 80;
+      this.popupRenderProgress -= this.calculateTimeDeltaTime() * 180;
     } else {
       this.canvasContext.clearRect(this.popopCenterX - 20, this.popopCenterY - 20, 40, 40);
       this.renderLevel();
@@ -315,7 +315,7 @@ export default class Game {
    */
   public renderPopupContent(): void {
     console.log(this.interactedObject.questionsEN[0]);
-    this.canvasContext.font = '20px "Lucida Console", sans-serif';
+    this.canvasContext.font = '17px Consolas';
     this.canvasContext.textBaseline = 'top';
     this.canvasContext.fillStyle = '#55ff55';
     const currentInteractable: Interactable = this.interactedObject;
@@ -328,9 +328,47 @@ export default class Game {
       currentQuestion = currentInteractable.questionsNL[currentAnsweredQuestions];
     }
 
-    this.canvasContext.fillText(currentQuestion.question,
-      this.popupCornerTLX + 50, this.popupCornerTLY + 50,
-      this.popupCornerBRX - this.popupCornerTLX + 100);
+    const lines: Array<string> = this.getLines(currentQuestion.question,
+      this.popupCornerBRX - this.popupCornerTLX - 50);
+
+    for (let i = 0; i < lines.length; i++) {
+      this.canvasContext.fillText(lines[i],
+        this.popupCornerTLX + 50, this.popupCornerTLY + 50 + i * 30,
+        this.popupCornerBRX - this.popupCornerTLX - 50);
+    }
+
+    for (let i = 0; i < currentQuestion.answers.length; i++) {
+      this.canvasContext.fillText(currentQuestion.answers[i],
+        this.popupCornerTLX + 50, this.popupCornerTLY + 150 + i * 50,
+        this.popupCornerBRX - this.popupCornerTLX - 50);
+    }
+  }
+
+  /**
+   * Generating lines to display in Popup
+   *
+   * @param text Text to display in Popup
+   * @param maxWidth Maximun width of Text in Popup
+   * @returns An Array of lines
+   */
+  public getLines(text: string, maxWidth: number): Array<string> {
+    const words = text.split(' ');
+    const lines: Array<string> = [];
+    let currentLine = words[0];
+
+    for (let i = 1; i < words.length; i++) {
+      const word = words[i];
+      const textMetric: TextMetrics = this.canvasContext.measureText(`${currentLine} ${word}`);
+      const { width } = textMetric;
+      if (width < maxWidth) {
+        currentLine += ` ${word}`;
+      } else {
+        lines.push(currentLine);
+        currentLine = word;
+      }
+    }
+    lines.push(currentLine);
+    return lines;
   }
 
   /**
