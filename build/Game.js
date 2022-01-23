@@ -2,7 +2,6 @@ import Levels from './data/Levels.js';
 import Interactables from './data/Interactables.js';
 import KeyListener from './KeyListener.js';
 import Player from './types/Player.js';
-import Doors from './data/Doors.js';
 export default class Game {
     keyListener;
     player;
@@ -59,7 +58,6 @@ export default class Game {
     popupCornerBRX;
     popupCornerBRY;
     popupContentRendered = false;
-    doors = new Doors();
     interactables = new Interactables();
     language = 'en';
     selectedMenuOption = 0;
@@ -206,22 +204,22 @@ export default class Game {
                     if (this.selectionChangeCooldown <= 0) {
                         if (keycode === KeyListener.KEY_A || keycode === KeyListener.KEY_LEFT) {
                             this.selectedMenuOption -= 1;
-                            this.selectionChangeCooldown = 50;
+                            this.selectionChangeCooldown = 40;
                             this.renderPopupContent();
                         }
                         if (keycode === KeyListener.KEY_W || keycode === KeyListener.KEY_UP) {
                             this.selectedMenuOption -= 1;
-                            this.selectionChangeCooldown = 50;
+                            this.selectionChangeCooldown = 40;
                             this.renderPopupContent();
                         }
                         if (keycode === KeyListener.KEY_D || keycode === KeyListener.KEY_RIGHT) {
                             this.selectedMenuOption += 1;
-                            this.selectionChangeCooldown = 50;
+                            this.selectionChangeCooldown = 40;
                             this.renderPopupContent();
                         }
                         if (keycode === KeyListener.KEY_S || keycode === KeyListener.KEY_DOWN) {
                             this.selectedMenuOption += 1;
-                            this.selectionChangeCooldown = 50;
+                            this.selectionChangeCooldown = 40;
                             this.renderPopupContent();
                         }
                     }
