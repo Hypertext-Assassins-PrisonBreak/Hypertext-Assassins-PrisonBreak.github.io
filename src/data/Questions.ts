@@ -29,7 +29,7 @@ export default class Questions {
 
     ['question4',
       new Question('What should you do if a stranger asks you to send a picture of yourself to them?',
-        ['Do not send any pictures and tell an adult straight away. ', 'Send the picture if you think you know them ', 'Send picture even though they are a stranger ', 'Ignore it'],
+        ['Do not send any pictures and tell an adult straight away.', 'Send the picture if you think you know them ', 'Send picture even though they are a stranger ', 'Ignore it'],
         0, 'Correct', 'Wrong',
         'You should never send pictures of yourself to a stranger as you do not know who they are or what they might do. If a stranger asks for a picture, refuse and tell an adult straight away. You should also never send a picture to somebody that you would not want anybody else to see. Even if you trust the person, it could still end up online or be shown to others.')],
 
@@ -193,8 +193,8 @@ export default class Questions {
         'https:// of het slotsymbool dat soms voor het webadres wordt weergegeven, geeft aan dat de website veiliger is. Het hoeft niet voor elke website te staan, maar als u persoonlijke informatie invoert, moet u ervoor zorgen dat deze is beveiligd met https://.')],
 
     ['question15',
-      new Question('Je ontvangt een nieuw vriendschapsverzoek van een persoon die geen profielfoto heeft, maar je herkent de naam als iemand in je klas. U:',
-        ['Verwijder het omdat je te cool bent voor vrienden', 'Accepteer het meteen', 'Vraag je klasgenoot persoonlijk om er zeker van te zijn dat hij/zij het verzoek heeft verzonden', 'Stuur ze een bericht met de vraag wie ze zijn'],
+      new Question('Je ontvangt een nieuw vriendschapsverzoek van een persoon die geen profielfoto heeft, maar zo heet iemand ook uit jouw klas. U:',
+        ['Verwijder het omdat je te cool bent om vrienden met diegene te zijn op social media.', 'Accepteer het meteen', 'Vraag je klasgenoot persoonlijk om er zeker van te zijn dat hij/zij het verzoek heeft verzonden', 'Stuur ze een bericht met de vraag wie ze zijn'],
         2, 'Correct', 'Wrong',
-        'Wees voorzichtig met wie je toevoegt als vriend op een social media-account. Wanneer je online een vriend toevoegt, hebben ze toegang tot veel van je persoonlijke gegevens, inclusief al je geposte photos. Vergeet niet om te controleren of de persoon die u toevoegt, is wie hij zegt dat hij is.')]]);
+        'Wees voorzichtig met wie je toevoegt als vriend op social media. Wanneer je online een vriend toevoegt, hebben ze toegang tot veel van je persoonlijke gegevens, inclusief al je geposte fotos. Vergeet niet om te controleren of de persoon die u toevoegt, is wie hij zegt dat hij is.')]]);
 }
