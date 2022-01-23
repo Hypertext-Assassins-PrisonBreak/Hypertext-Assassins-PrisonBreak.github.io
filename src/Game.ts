@@ -109,6 +109,9 @@ export default class Game {
   // The time in frames the Player has to wait before changing selection
   private selectionChangeCooldown: number = 0;
 
+  // Index of the currently rendered in Popup Question with Interactables map
+  private currentlyRenderedQuestionIndex: number;
+
   /**
    * Constructing a new instance of this class
    *
@@ -248,6 +251,7 @@ export default class Game {
 
     if (this.gameState === 1) {
       this.renderPopupOpening();
+      this.currentlyRenderedQuestionIndex = this.interactedObject.answeredQuestions;
     }
 
     if (this.gameState === 2) {
@@ -297,8 +301,11 @@ export default class Game {
       }
       if (this.gameState === 2) {
         if (state) {
-          if (state && keycode === KeyListener.KEY_ESC) {
+          if (keycode === KeyListener.KEY_ESC) {
             this.gameState = 3;
+          }
+          if (keycode === KeyListener.KEY_SPACE || keycode === KeyListener.KEY_ENTER) {
+            this.selectInteractableOption();
           }
           if (this.selectionChangeCooldown <= 0) {
             if (keycode === KeyListener.KEY_A || keycode === KeyListener.KEY_LEFT) {
@@ -382,20 +389,51 @@ export default class Game {
     this.canvasContext.clearRect(this.popupCornerTLX + 30, this.popupCornerTLY + 30,
       this.popupCornerBRX - this.popupCornerTLX - 50,
       this.popupCornerBRY - this.popupCornerTLY - 50);
+
     this.canvasContext.font = '17px Consolas';
     this.canvasContext.textBaseline = 'top';
     this.canvasContext.fillStyle = '#55ff55';
-    const currentInteractable: Interactable = this.interactedObject;
-    const currentAnsweredQuestions: number = currentInteractable.answeredQuestions;
-    let currentQuestion: Question;
+
+    // Rendering Question in Popup
+    let currentlyRenderedQuestion: Question;
     if (this.language === 'en') {
-      currentQuestion = currentInteractable.questionsEN[currentAnsweredQuestions];
+      currentlyRenderedQuestion = this.interactedObject.questionsEN
+        [this.currentlyRenderedQuestionIndex];
     }
     if (this.language === 'nl') {
-      currentQuestion = currentInteractable.questionsNL[currentAnsweredQuestions];
+      currentlyRenderedQuestion = this.interactedObject.questionsNL
+        [this.currentlyRenderedQuestionIndex];
+    }
+    this.renderQuestion(currentlyRenderedQuestion);
+    this.renderMenuOptionSelector();
+
+    let nextIsAnswered: boolean = false;
+    let previousIsAnswered: boolean = false;
+
+    if (this.currentlyRenderedQuestionIndex !== 0) {
+      previousIsAnswered = true;
+    }
+    if (this.currentlyRenderedQuestionIndex < this.interactedObject.answeredQuestions) {
+      nextIsAnswered = true;
+    } else {
+      this.menuOptions = currentlyRenderedQuestion.answers;
     }
 
-    const lines: Array<string> = this.getLines(currentQuestion.question,
+    if (previousIsAnswered) {
+      this.menuOptions.push(`${(this.language === 'en' ? 'Previous' : '')}`);
+    }
+    if (nextIsAnswered) {
+      this.menuOptions.push(`${(this.language === 'en' ? 'Next' : '')}`);
+    }
+  }
+
+  /**
+   * Rendering of Question in Popup
+   *
+   * @param currentlyRenderedQuestion Index of the current Question
+   */
+  public renderQuestion(currentlyRenderedQuestion: Question): void {
+    const lines: Array<string> = this.getLines(currentlyRenderedQuestion.question,
       this.popupCornerBRX - this.popupCornerTLX - 50);
 
     for (let i = 0; i < lines.length; i++) {
@@ -404,14 +442,11 @@ export default class Game {
         this.popupCornerBRX - this.popupCornerTLX - 50);
     }
 
-    for (let i = 0; i < currentQuestion.answers.length; i++) {
-      this.canvasContext.fillText(currentQuestion.answers[i],
+    for (let i = 0; i < currentlyRenderedQuestion.answers.length; i++) {
+      this.canvasContext.fillText(currentlyRenderedQuestion.answers[i],
         this.popupCornerTLX + 50, this.popupCornerTLY + 150 + i * 50,
         this.popupCornerBRX - this.popupCornerTLX - 50);
     }
-
-    this.menuOptions = currentQuestion.answers;
-    this.renderMenuOptionSelector();
   }
 
   /**
@@ -478,6 +513,13 @@ export default class Game {
     this.canvasContext.lineWidth = 15;
     this.canvasContext.strokeRect(this.popupCornerTLX - 1, this.popupCornerTLY - 1,
       this.popupCornerBRX + 1, this.popupCornerBRY + 1);
+  }
+
+  /**
+   * Process Intereactable menu option selection
+   */
+  public selectInteractableOption(): void {
+
   }
 
   /**

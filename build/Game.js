@@ -198,8 +198,11 @@ export default class Game {
             }
             if (this.gameState === 2) {
                 if (state) {
-                    if (state && keycode === KeyListener.KEY_ESC) {
+                    if (keycode === KeyListener.KEY_ESC) {
                         this.gameState = 3;
+                    }
+                    if (keycode === KeyListener.KEY_SPACE || keycode === KeyListener.KEY_ENTER) {
+                        this.selectInteractableOption();
                     }
                     if (this.selectionChangeCooldown <= 0) {
                         if (keycode === KeyListener.KEY_A || keycode === KeyListener.KEY_LEFT) {
@@ -267,14 +270,24 @@ export default class Game {
         this.canvasContext.font = '17px Consolas';
         this.canvasContext.textBaseline = 'top';
         this.canvasContext.fillStyle = '#55ff55';
-        const currentInteractable = this.interactedObject;
-        const currentAnsweredQuestions = currentInteractable.answeredQuestions;
+        const currentlyAnsweredQuestions = this.interactedObject.answeredQuestions;
+        if (currentlyAnsweredQuestions < this.interactedObject.questionsEN.length - 2) {
+            this.renderQuestion(currentlyAnsweredQuestions);
+        }
+        else {
+            this.canvasContext.font = '50px Consolas';
+            const sectionClearText = `${(this.language === 'en' ? 'Section Clear' : 'Sectie Wissen')}`;
+            const { width } = this.canvasContext.measureText(sectionClearText);
+            this.canvasContext.fillText(sectionClearText, this.popopCenterX - width / 2, this.popopCenterY - 25);
+        }
+    }
+    renderQuestion(currentAnsweredQuestions) {
         let currentQuestion;
         if (this.language === 'en') {
-            currentQuestion = currentInteractable.questionsEN[currentAnsweredQuestions];
+            currentQuestion = this.interactedObject.questionsEN[currentAnsweredQuestions];
         }
         if (this.language === 'nl') {
-            currentQuestion = currentInteractable.questionsNL[currentAnsweredQuestions];
+            currentQuestion = this.interactedObject.questionsNL[currentAnsweredQuestions];
         }
         const lines = this.getLines(currentQuestion.question, this.popupCornerBRX - this.popupCornerTLX - 50);
         for (let i = 0; i < lines.length; i++) {
@@ -328,6 +341,8 @@ export default class Game {
         this.canvasContext.strokeStyle = '#555555';
         this.canvasContext.lineWidth = 15;
         this.canvasContext.strokeRect(this.popupCornerTLX - 1, this.popupCornerTLY - 1, this.popupCornerBRX + 1, this.popupCornerBRY + 1);
+    }
+    selectInteractableOption() {
     }
     renderCharacter(player) {
         this.characterClear(player);
