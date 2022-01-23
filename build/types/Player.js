@@ -6,7 +6,7 @@ export default class Player extends Character {
     constructor(xcoord, ycoord) {
         super(xcoord, ycoord);
     }
-    processPlayerMovement(movementControls, tdt) {
+    processPlayerMovement(doors, movementControls, tdt) {
         this.xvector = 0;
         this.yvector = 0;
         if (movementControls[0]) {
@@ -29,22 +29,22 @@ export default class Player extends Character {
         }
         const newxcoord = this.xcoord + dx * tdt * 250;
         const newycoord = this.ycoord + dy * tdt * 250;
-        if (this.playerCollisionCheck(newxcoord, newycoord)) {
+        if (this.playerCollisionCheck(doors, newxcoord, newycoord)) {
             this.xcoord = newxcoord;
             this.ycoord = newycoord;
             return true;
         }
-        if (this.playerCollisionCheck(newxcoord, this.ycoord)) {
+        if (this.playerCollisionCheck(doors, newxcoord, this.ycoord)) {
             this.xcoord = newxcoord;
             return true;
         }
-        if (this.playerCollisionCheck(this.xcoord, newycoord)) {
+        if (this.playerCollisionCheck(doors, this.xcoord, newycoord)) {
             this.ycoord = newycoord;
             return true;
         }
         return false;
     }
-    playerCollisionCheck(xcoord = this.xcoord, ycoord = this.ycoord) {
+    playerCollisionCheck(doors, xcoord = this.xcoord, ycoord = this.ycoord) {
         let isOnFreeSpot = true;
         for (let i = xcoord; i < xcoord + this.characterW; i++) {
             for (let j = ycoord; j < ycoord + this.characterH; j++) {
@@ -53,6 +53,12 @@ export default class Player extends Character {
                 if (Levels.gameLevels.get('level0')[collisionTestedTileY][collisionTestedTileX] >= 20) {
                     isOnFreeSpot = false;
                 }
+                doors.doors.forEach((door, id) => {
+                    if (door.tileX === collisionTestedTileX && door.tileY === collisionTestedTileY
+                        && !door.isOpen) {
+                        isOnFreeSpot = false;
+                    }
+                });
             }
         }
         return isOnFreeSpot;

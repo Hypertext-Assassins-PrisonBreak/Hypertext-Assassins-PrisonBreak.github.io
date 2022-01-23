@@ -5,6 +5,8 @@ import KeyListener from './KeyListener.js';
 import Player from './types/Player.js';
 import Interactable from './types/Interactable.js';
 import Question from './types/Question.js';
+import Doors from './data/Doors.js';
+import Door from './types/Door.js';
 
 export default class Game {
   public keyListener: KeyListener;
@@ -31,7 +33,11 @@ export default class Game {
     ['player31', '../Assets/playerWalkDown2.png'],
     ['interactableWestAdjacent', '../Assets/pc_side_left.png'],
     ['interactableNorthAdjacent', '../Assets/pc_front1.png'],
-    ['interactableEastAdjacent', '../Assets/pc_side_right.png']]);
+    ['interactableEastAdjacent', '../Assets/pc_side_right.png'],
+    ['doorH', '../Assets/door_horizontally.png'],
+    ['doorV', '../Assets/door_vertically.png'],
+    ['doorHO', '../Assets/door_horizontally_open.png'],
+    ['doorVO', '../Assets/door_vertically_open.png']]);
 
   // Map of all Assets
   private assets: Map<string, HTMLImageElement> = new Map<string, HTMLImageElement>();
@@ -89,6 +95,8 @@ export default class Game {
   private popupCornerBRY: number;
 
   private popupContentRendered: boolean = false;
+
+  private doors: Doors = new Doors();
 
   // Index of the current Question
   private interactables: Interactables = new Interactables();
@@ -153,6 +161,22 @@ export default class Game {
     const tileImage: HTMLImageElement = this.assets.get(`tile${Number(tileId / 10 - 1)}`);
     this.canvasContext.drawImage(tileImage, x * Levels.tileW, y * Levels.tileH);
 
+    // Rendering Doors
+    let ifTileIsDoor: boolean = false;
+    let doorInTile: Door;
+    this.doors.doors.forEach((door: Door, id: string) => {
+      const ifSameTile: boolean = door.tileX === x && door.tileY === y;
+      ifTileIsDoor ||= ifSameTile;
+      if (ifSameTile) {
+        doorInTile = door;
+      }
+    });
+    if (ifTileIsDoor) {
+      const doorImageID = `door${doorInTile.orientationIsVertical ? 'V' : 'H'}${doorInTile.isOpen ? 'O' : ''}`;
+      const doorImage: HTMLImageElement = this.assets.get(doorImageID);
+      this.canvasContext.drawImage(doorImage, x * Levels.tileW, y * Levels.tileH);
+    }
+
     // Checking if Tile has Interactable
     let ifIntereactableTile: boolean = false;
     this.interactables.interactables.forEach((interactable: Interactable, id: string) => {
@@ -199,7 +223,8 @@ export default class Game {
   public renderFrame(): void {
     if (this.gameState === 0) {
       this.processPlayerInput();
-      if (this.player.processPlayerMovement(this.movementControls, this.calculateTimeDeltaTime())) {
+      if (this.player.processPlayerMovement(this.doors,
+        this.movementControls, this.calculateTimeDeltaTime())) {
         this.renderCharacter(this.player);
         if (this.frameCount % 20 === 0) {
           this.flag = !this.flag;

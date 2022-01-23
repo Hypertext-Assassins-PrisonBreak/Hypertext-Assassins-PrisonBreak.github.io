@@ -2,6 +2,8 @@ import Character from './Character.js';
 import Levels from '../data/Levels.js';
 import Interactables from '../data/Interactables.js';
 import Interactable from './Interactable.js';
+import Doors from '../data/Doors.js';
+import Door from '../types/Door.js';
 
 export default class Player extends Character {
   public xvector: number;
@@ -25,7 +27,8 @@ export default class Player extends Character {
    * @param tdt Time.DeltaTime
    * @returns True if player moved in this Frame
    */
-  public processPlayerMovement(movementControls: Array<boolean>, tdt: number): boolean {
+  public processPlayerMovement(doors: Doors,
+    movementControls: Array<boolean>, tdt: number): boolean {
     this.xvector = 0;
     this.yvector = 0;
     // Read Key Presses
@@ -52,16 +55,16 @@ export default class Player extends Character {
     const newycoord: number = this.ycoord + dy * tdt * 250;
 
     // Changing Player Character coordinates if the new location is free
-    if (this.playerCollisionCheck(newxcoord, newycoord)) {
+    if (this.playerCollisionCheck(doors, newxcoord, newycoord)) {
       this.xcoord = newxcoord;
       this.ycoord = newycoord;
       return true;
     }
-    if (this.playerCollisionCheck(newxcoord, this.ycoord)) {
+    if (this.playerCollisionCheck(doors, newxcoord, this.ycoord)) {
       this.xcoord = newxcoord;
       return true;
     }
-    if (this.playerCollisionCheck(this.xcoord, newycoord)) {
+    if (this.playerCollisionCheck(doors, this.xcoord, newycoord)) {
       this.ycoord = newycoord;
       return true;
     }
@@ -71,11 +74,13 @@ export default class Player extends Character {
   /**
    * Collision check for Player Collision Box
    *
+   * @param doors Instance containing a map of all Doors
    * @param xcoord x cordinate of Player
    * @param ycoord y cordinate of Player
    * @returns True is Player stands on free spot
    */
-  public playerCollisionCheck(xcoord: number = this.xcoord, ycoord: number = this.ycoord): boolean {
+  public playerCollisionCheck(doors: Doors,
+    xcoord: number = this.xcoord, ycoord: number = this.ycoord): boolean {
     let isOnFreeSpot: boolean = true;
     for (let i = xcoord; i < xcoord + this.characterW; i++) {
       for (let j = ycoord; j < ycoord + this.characterH; j++) {
@@ -84,6 +89,12 @@ export default class Player extends Character {
         if (Levels.gameLevels.get('level0')[collisionTestedTileY][collisionTestedTileX] >= 20) {
           isOnFreeSpot = false;
         }
+        doors.doors.forEach((door: Door, id: string) => {
+          if (door.tileX === collisionTestedTileX && door.tileY === collisionTestedTileY
+            && !door.isOpen) {
+            isOnFreeSpot = false;
+          }
+        });
       }
     }
     return isOnFreeSpot;

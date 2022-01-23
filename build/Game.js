@@ -2,6 +2,7 @@ import Levels from './data/Levels.js';
 import Interactables from './data/Interactables.js';
 import KeyListener from './KeyListener.js';
 import Player from './types/Player.js';
+import Doors from './data/Doors.js';
 export default class Game {
     keyListener;
     player;
@@ -21,7 +22,11 @@ export default class Game {
         ['player31', '../Assets/playerWalkDown2.png'],
         ['interactableWestAdjacent', '../Assets/pc_side_left.png'],
         ['interactableNorthAdjacent', '../Assets/pc_front1.png'],
-        ['interactableEastAdjacent', '../Assets/pc_side_right.png']
+        ['interactableEastAdjacent', '../Assets/pc_side_right.png'],
+        ['doorH', '../Assets/door_horizontally.png'],
+        ['doorV', '../Assets/door_vertically.png'],
+        ['doorHO', '../Assets/door_horizontally_open.png'],
+        ['doorVO', '../Assets/door_vertically_open.png']
     ]);
     assets = new Map();
     controls = new Map([
@@ -54,6 +59,7 @@ export default class Game {
     popupCornerBRX;
     popupCornerBRY;
     popupContentRendered = false;
+    doors = new Doors();
     interactables = new Interactables();
     language = 'en';
     constructor(canvasHTML) {
@@ -87,6 +93,20 @@ export default class Game {
         const tileId = Levels.gameLevels.get('level0')[y][x];
         const tileImage = this.assets.get(`tile${Number(tileId / 10 - 1)}`);
         this.canvasContext.drawImage(tileImage, x * Levels.tileW, y * Levels.tileH);
+        let ifTileIsDoor = false;
+        let doorInTile;
+        this.doors.doors.forEach((door, id) => {
+            const ifSameTile = door.tileX === x && door.tileY === y;
+            ifTileIsDoor ||= ifSameTile;
+            if (ifSameTile) {
+                doorInTile = door;
+            }
+        });
+        if (ifTileIsDoor) {
+            const doorImageID = `door${doorInTile.orientationIsVertical ? 'V' : 'H'}${doorInTile.isOpen ? 'O' : ''}`;
+            const doorImage = this.assets.get(doorImageID);
+            this.canvasContext.drawImage(doorImage, x * Levels.tileW, y * Levels.tileH);
+        }
         let ifIntereactableTile = false;
         this.interactables.interactables.forEach((interactable, id) => {
             ifIntereactableTile ||= interactable.tileX === x && interactable.tileY === y;
@@ -123,7 +143,7 @@ export default class Game {
     renderFrame() {
         if (this.gameState === 0) {
             this.processPlayerInput();
-            if (this.player.processPlayerMovement(this.movementControls, this.calculateTimeDeltaTime())) {
+            if (this.player.processPlayerMovement(this.doors, this.movementControls, this.calculateTimeDeltaTime())) {
                 this.renderCharacter(this.player);
                 if (this.frameCount % 20 === 0) {
                     this.flag = !this.flag;
