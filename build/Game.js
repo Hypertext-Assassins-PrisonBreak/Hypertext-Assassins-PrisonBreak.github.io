@@ -55,6 +55,7 @@ export default class Game {
     popupCornerBRY;
     popupContentRendered = false;
     interactables = new Interactables();
+    language = 'en';
     constructor(canvasHTML) {
         this.canvasHTML = canvasHTML;
         this.canvas = (this.canvasHTML);
@@ -209,7 +210,20 @@ export default class Game {
         }
     }
     renderPopupContent() {
-        console.log(this.interactedObject.questionsNL[0]);
+        console.log(this.interactedObject.questionsEN[0]);
+        this.canvasContext.font = '20px "Lucida Console", sans-serif';
+        this.canvasContext.textBaseline = 'top';
+        this.canvasContext.fillStyle = '#55ff55';
+        const currentInteractable = this.interactedObject;
+        const currentAnsweredQuestions = currentInteractable.answeredQuestions;
+        let currentQuestion;
+        if (this.language === 'en') {
+            currentQuestion = currentInteractable.questionsEN[currentAnsweredQuestions];
+        }
+        if (this.language === 'nl') {
+            currentQuestion = currentInteractable.questionsNL[currentAnsweredQuestions];
+        }
+        this.canvasContext.fillText(currentQuestion.question, this.popupCornerTLX + 50, this.popupCornerTLY + 50, this.popupCornerBRX - this.popupCornerTLX + 100);
     }
     recalculatePopupDimensions() {
         this.popopCenterX = this.canvas.width / 2;
@@ -276,6 +290,7 @@ export default class Game {
     }
     renderFps(fps) {
         this.canvasContext.font = 'bold 10pt sans-serif';
+        this.canvasContext.textBaseline = 'alphabetic';
         this.canvasContext.clearRect(0, 0, 75, 30);
         this.canvasContext.fillStyle = '#ff0000';
         this.canvasContext.fillText(`FPS: ${fps}`, 10, 20);

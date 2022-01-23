@@ -4,6 +4,7 @@ import Interactables from './data/Interactables.js';
 import KeyListener from './KeyListener.js';
 import Player from './types/Player.js';
 import Interactable from './types/Interactable.js';
+import Question from './types/Question.js';
 
 export default class Game {
   public keyListener: KeyListener;
@@ -91,6 +92,9 @@ export default class Game {
 
   // Index of the current Question
   private interactables: Interactables = new Interactables();
+
+  // Current text display language (en for English and nl for Dutch)
+  private language: string = 'en';
 
   /**
    * Constructing a new instance of this class
@@ -310,7 +314,23 @@ export default class Game {
    * Rendering of Popup Content
    */
   public renderPopupContent(): void {
-    console.log(this.interactedObject.questionsNL[0]);
+    console.log(this.interactedObject.questionsEN[0]);
+    this.canvasContext.font = '20px "Lucida Console", sans-serif';
+    this.canvasContext.textBaseline = 'top';
+    this.canvasContext.fillStyle = '#55ff55';
+    const currentInteractable: Interactable = this.interactedObject;
+    const currentAnsweredQuestions: number = currentInteractable.answeredQuestions;
+    let currentQuestion: Question;
+    if (this.language === 'en') {
+      currentQuestion = currentInteractable.questionsEN[currentAnsweredQuestions];
+    }
+    if (this.language === 'nl') {
+      currentQuestion = currentInteractable.questionsNL[currentAnsweredQuestions];
+    }
+
+    this.canvasContext.fillText(currentQuestion.question,
+      this.popupCornerTLX + 50, this.popupCornerTLY + 50,
+      this.popupCornerBRX - this.popupCornerTLX + 100);
   }
 
   /**
@@ -424,6 +444,7 @@ export default class Game {
    */
   public renderFps(fps: number): void {
     this.canvasContext.font = 'bold 10pt sans-serif';
+    this.canvasContext.textBaseline = 'alphabetic';
     this.canvasContext.clearRect(0, 0, 75, 30);
     this.canvasContext.fillStyle = '#ff0000';
     this.canvasContext.fillText(`FPS: ${fps}`, 10, 20);
