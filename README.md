@@ -11,3 +11,5 @@ The Game idea is top-down view Prison Break. In the game, the player has to move
 ## Game Control
 
 To move around the map, the player can use keyboard keys like WSAD and Arrows. To access the questions the player has to press the space key next to the terminal. Choosing the correct answer can be done by up and down arrows, W or S keys. To submit the answer, the player has to click enter.  
+
+For more information access our [wiki(https://github.com/Hypertext-Assassins-PrisonBreak/Hypertext-Assassins-PrisonBreak.github.io/wiki)]
