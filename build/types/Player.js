@@ -6,7 +6,7 @@ export default class Player extends Character {
     constructor(xcoord, ycoord) {
         super(xcoord, ycoord);
     }
-    processPlayerMovement(doors, movementControls, tdt) {
+    processPlayerMovement(interactables, movementControls, tdt) {
         this.xvector = 0;
         this.yvector = 0;
         if (movementControls[0]) {
@@ -29,22 +29,22 @@ export default class Player extends Character {
         }
         const newxcoord = this.xcoord + dx * tdt * 250;
         const newycoord = this.ycoord + dy * tdt * 250;
-        if (this.playerCollisionCheck(doors, newxcoord, newycoord)) {
+        if (this.playerCollisionCheck(interactables, newxcoord, newycoord)) {
             this.xcoord = newxcoord;
             this.ycoord = newycoord;
             return true;
         }
-        if (this.playerCollisionCheck(doors, newxcoord, this.ycoord)) {
+        if (this.playerCollisionCheck(interactables, newxcoord, this.ycoord)) {
             this.xcoord = newxcoord;
             return true;
         }
-        if (this.playerCollisionCheck(doors, this.xcoord, newycoord)) {
+        if (this.playerCollisionCheck(interactables, this.xcoord, newycoord)) {
             this.ycoord = newycoord;
             return true;
         }
         return false;
     }
-    playerCollisionCheck(doors, xcoord = this.xcoord, ycoord = this.ycoord) {
+    playerCollisionCheck(interactables, xcoord = this.xcoord, ycoord = this.ycoord) {
         let isOnFreeSpot = true;
         for (let i = xcoord; i < xcoord + this.characterW; i++) {
             for (let j = ycoord; j < ycoord + this.characterH; j++) {
@@ -53,10 +53,13 @@ export default class Player extends Character {
                 if (Levels.gameLevels.get('level0')[collisionTestedTileY][collisionTestedTileX] >= 20) {
                     isOnFreeSpot = false;
                 }
-                doors.doors.forEach((door, id) => {
-                    if (door.tileX === collisionTestedTileX && door.tileY === collisionTestedTileY
-                        && !door.isOpen) {
-                        isOnFreeSpot = false;
+                interactables.interactables.forEach((interactable, id) => {
+                    for (let h = 0; h < interactable.doors.length; h++) {
+                        if (interactable.doors[h].tileX === collisionTestedTileX
+                            && interactable.doors[h].tileY === collisionTestedTileY
+                            && !interactable.doors[h].isOpen) {
+                            isOnFreeSpot = false;
+                        }
                     }
                 });
             }

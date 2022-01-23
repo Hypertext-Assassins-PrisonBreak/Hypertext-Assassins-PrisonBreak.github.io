@@ -27,7 +27,7 @@ export default class Player extends Character {
    * @param tdt Time.DeltaTime
    * @returns True if player moved in this Frame
    */
-  public processPlayerMovement(doors: Doors,
+  public processPlayerMovement(interactables: Interactables,
     movementControls: Array<boolean>, tdt: number): boolean {
     this.xvector = 0;
     this.yvector = 0;
@@ -55,16 +55,16 @@ export default class Player extends Character {
     const newycoord: number = this.ycoord + dy * tdt * 250;
 
     // Changing Player Character coordinates if the new location is free
-    if (this.playerCollisionCheck(doors, newxcoord, newycoord)) {
+    if (this.playerCollisionCheck(interactables, newxcoord, newycoord)) {
       this.xcoord = newxcoord;
       this.ycoord = newycoord;
       return true;
     }
-    if (this.playerCollisionCheck(doors, newxcoord, this.ycoord)) {
+    if (this.playerCollisionCheck(interactables, newxcoord, this.ycoord)) {
       this.xcoord = newxcoord;
       return true;
     }
-    if (this.playerCollisionCheck(doors, this.xcoord, newycoord)) {
+    if (this.playerCollisionCheck(interactables, this.xcoord, newycoord)) {
       this.ycoord = newycoord;
       return true;
     }
@@ -79,20 +79,27 @@ export default class Player extends Character {
    * @param ycoord y cordinate of Player
    * @returns True is Player stands on free spot
    */
-  public playerCollisionCheck(doors: Doors,
+  public playerCollisionCheck(interactables: Interactables,
     xcoord: number = this.xcoord, ycoord: number = this.ycoord): boolean {
     let isOnFreeSpot: boolean = true;
     for (let i = xcoord; i < xcoord + this.characterW; i++) {
       for (let j = ycoord; j < ycoord + this.characterH; j++) {
         const collisionTestedTileX = Math.floor(i / Levels.tileW);
         const collisionTestedTileY = Math.floor(j / Levels.tileH);
+
+        // Collision with walls
         if (Levels.gameLevels.get('level0')[collisionTestedTileY][collisionTestedTileX] >= 20) {
           isOnFreeSpot = false;
         }
-        doors.doors.forEach((door: Door, id: string) => {
-          if (door.tileX === collisionTestedTileX && door.tileY === collisionTestedTileY
-            && !door.isOpen) {
-            isOnFreeSpot = false;
+
+        // Collision with doors
+        interactables.interactables.forEach((interactable: Interactable, id: string) => {
+          for (let h = 0; h < interactable.doors.length; h++) {
+            if (interactable.doors[h].tileX === collisionTestedTileX
+              && interactable.doors[h].tileY === collisionTestedTileY
+              && !interactable.doors[h].isOpen) {
+              isOnFreeSpot = false;
+              }
           }
         });
       }

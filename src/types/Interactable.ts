@@ -1,3 +1,4 @@
+import Door from '../types/Door.js';
 import Question from './Question.js';
 
 export default class Interactable {
@@ -8,6 +9,8 @@ export default class Interactable {
   public questionsEN: Array<Question>;
 
   public questionsNL: Array<Question>;
+
+  public doors: Array<Door>;
 
   public answeredQuestions: number;
 
@@ -20,16 +23,19 @@ export default class Interactable {
    * @param tileY
    * @param questionsEN
    * @param questionsNL
+   * @param doors
    * @param answeredQuestions
    * @param correctAnswers
    */
   public constructor(tileX: number, tileY: number,
     questionsEN: Array<Question>, questionsNL: Array<Question>,
+    doors: Array<Door>,
     answeredQuestions: number = 0, correctAnswers: number = 0) {
     this.tileX = tileX;
     this.tileY = tileY;
     this.questionsEN = questionsEN;
     this.questionsNL = questionsNL;
+    this.doors = doors;
     this.answeredQuestions = answeredQuestions;
     this.correctAnswers = correctAnswers;
   }

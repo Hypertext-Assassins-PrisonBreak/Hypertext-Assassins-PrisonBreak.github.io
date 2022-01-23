@@ -96,13 +96,22 @@ export default class Game {
 
   private popupContentRendered: boolean = false;
 
+  // Instance containing a map of all Doors
   private doors: Doors = new Doors();
 
-  // Index of the current Question
+  // Instance containing a map of all Interactables
   private interactables: Interactables = new Interactables();
 
   // Current text display language (en for English and nl for Dutch)
   private language: string = 'en';
+
+  private selectedMenuOption: number = 0;
+
+  // Array of all selection menu options
+  private menuOptions: Array<string> = [];
+
+  // The time in frames the Player has to wait before changing selection
+  private selectionChangeCooldown: number = 0;
 
   /**
    * Constructing a new instance of this class
@@ -161,16 +170,21 @@ export default class Game {
     const tileImage: HTMLImageElement = this.assets.get(`tile${Number(tileId / 10 - 1)}`);
     this.canvasContext.drawImage(tileImage, x * Levels.tileW, y * Levels.tileH);
 
-    // Rendering Doors
+    // Checking if Tile has Door
     let ifTileIsDoor: boolean = false;
     let doorInTile: Door;
-    this.doors.doors.forEach((door: Door, id: string) => {
-      const ifSameTile: boolean = door.tileX === x && door.tileY === y;
-      ifTileIsDoor ||= ifSameTile;
-      if (ifSameTile) {
-        doorInTile = door;
+    this.interactables.interactables.forEach((interactable: Interactable, id: string) => {
+      for (let i = 0; i < interactable.doors.length; i++) {
+        const ifSameTile: boolean = interactable.doors[i].tileX === x
+          && interactable.doors[i].tileY === y;
+        ifTileIsDoor ||= ifSameTile;
+        if (ifSameTile) {
+          doorInTile = interactable.doors[i];
+        }
       }
     });
+
+    // Rendering Door
     if (ifTileIsDoor) {
       const doorImageID = `door${doorInTile.orientationIsVertical ? 'V' : 'H'}${doorInTile.isOpen ? 'O' : ''}`;
       const doorImage: HTMLImageElement = this.assets.get(doorImageID);
@@ -221,9 +235,13 @@ export default class Game {
    * Rendering of a Frame
    */
   public renderFrame(): void {
+    if (this.selectionChangeCooldown > 0) {
+      this.selectionChangeCooldown -= 1;
+    }
+
     if (this.gameState === 0) {
       this.processPlayerInput();
-      if (this.player.processPlayerMovement(this.doors,
+      if (this.player.processPlayerMovement(this.interactables,
         this.movementControls, this.calculateTimeDeltaTime())) {
         this.renderCharacter(this.player);
         if (this.frameCount % 20 === 0) {
@@ -282,8 +300,32 @@ export default class Game {
         }
       }
       if (this.gameState === 2) {
-        if (state && keycode === KeyListener.KEY_ESC) {
-          this.gameState = 3;
+        if (state) {
+          if (state && keycode === KeyListener.KEY_ESC) {
+            this.gameState = 3;
+          }
+          if (this.selectionChangeCooldown <= 0) {
+            if (keycode === KeyListener.KEY_A || keycode === KeyListener.KEY_LEFT) {
+              this.selectedMenuOption -= 1;
+              this.selectionChangeCooldown = 50;
+              this.renderPopupContent();
+            }
+            if (keycode === KeyListener.KEY_W || keycode === KeyListener.KEY_UP) {
+              this.selectedMenuOption -= 1;
+              this.selectionChangeCooldown = 50;
+              this.renderPopupContent();
+            }
+            if (keycode === KeyListener.KEY_D || keycode === KeyListener.KEY_RIGHT) {
+              this.selectedMenuOption += 1;
+              this.selectionChangeCooldown = 50;
+              this.renderPopupContent();
+            }
+            if (keycode === KeyListener.KEY_S || keycode === KeyListener.KEY_DOWN) {
+              this.selectedMenuOption += 1;
+              this.selectionChangeCooldown = 50;
+              this.renderPopupContent();
+            }
+          }
         }
       }
     });
@@ -306,6 +348,7 @@ export default class Game {
   public renderPopupOpening(): void {
     this.recalculatePopupDimensions();
     this.renderPopupFrame();
+    this.selectedMenuOption = 0;
 
     if (this.popupRenderProgress < 80) {
       this.popupRenderProgress += this.calculateTimeDeltaTime() * 180;
@@ -324,6 +367,7 @@ export default class Game {
 
     this.recalculatePopupDimensions();
     this.renderPopupFrame();
+    this.selectedMenuOption = 0;
 
     if (this.popupRenderProgress > 0) {
       this.popupRenderProgress -= this.calculateTimeDeltaTime() * 180;
@@ -339,7 +383,9 @@ export default class Game {
    * Rendering of Popup Content
    */
   public renderPopupContent(): void {
-    console.log(this.interactedObject.questionsEN[0]);
+    this.canvasContext.clearRect(this.popupCornerTLX + 30, this.popupCornerTLY + 30,
+      this.popupCornerBRX - this.popupCornerTLX - 50,
+      this.popupCornerBRY - this.popupCornerTLY - 50);
     this.canvasContext.font = '17px Consolas';
     this.canvasContext.textBaseline = 'top';
     this.canvasContext.fillStyle = '#55ff55';
@@ -367,6 +413,9 @@ export default class Game {
         this.popupCornerTLX + 50, this.popupCornerTLY + 150 + i * 50,
         this.popupCornerBRX - this.popupCornerTLX - 50);
     }
+
+    this.menuOptions = currentQuestion.answers;
+    this.renderMenuOptionSelector();
   }
 
   /**
@@ -394,6 +443,19 @@ export default class Game {
     }
     lines.push(currentLine);
     return lines;
+  }
+
+  /**
+   * Rendering of menu option selector
+   */
+  public renderMenuOptionSelector(): void {
+    if (this.selectedMenuOption < 0) {
+      this.selectedMenuOption = this.menuOptions.length - 1;
+    } else if (this.selectedMenuOption >= this.menuOptions.length) {
+      this.selectedMenuOption = 0;
+    }
+    this.canvasContext.fillText('‣',
+      this.popupCornerTLX + 30, this.popupCornerTLY + 150 + this.selectedMenuOption * 50);
   }
 
   /**

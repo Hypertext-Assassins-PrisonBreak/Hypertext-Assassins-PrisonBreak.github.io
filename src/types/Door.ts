@@ -16,7 +16,7 @@ export default class Door {
    * @param isOpen
    */
   public constructor(tileX: number, tileY: number,
-    orientationIsVertical: boolean, isOpen: boolean = true) {
+    orientationIsVertical: boolean, isOpen: boolean = false) {
     this.tileX = tileX;
     this.tileY = tileY;
     this.orientationIsVertical = orientationIsVertical;
