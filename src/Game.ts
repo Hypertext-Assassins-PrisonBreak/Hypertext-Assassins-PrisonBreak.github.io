@@ -256,6 +256,8 @@ export default class Game {
       this.score = 0;
     }
 
+    console.log(this.score);
+
     if (this.gameState === 0) {
       this.processPlayerInput();
       if (this.player.processPlayerMovement(this.interactables,
@@ -419,8 +421,8 @@ export default class Game {
    */
   public renderPopupContent(): void {
     this.canvasContext.clearRect(this.popupCornerTLX + 30, this.popupCornerTLY + 30,
-      this.popupCornerBRX - this.popupCornerTLX - 30,
-      this.popupCornerBRY - this.popupCornerTLY - 30);
+      this.popupCornerBRX - this.popupCornerTLX + 50,
+      this.popupCornerBRY - this.popupCornerTLY - 5);
 
     if (this.interactedObject.isSectionClear === true) {
       this.canvasContext.font = '20px Consolas';
@@ -518,7 +520,7 @@ export default class Game {
     this.canvasContext.fillStyle = '#55ff55';
 
     this.canvasContext.clearRect(this.popupCornerTLX + 30, this.popupCornerTLY + 150,
-      350, 280);
+      450, 280);
     for (let i = 0; i < this.menuOptions.length; i++) {
       this.canvasContext.fillText(this.menuOptions[i],
         this.popupCornerTLX + 50, this.popupCornerTLY + 150 + i * 50,
@@ -555,14 +557,14 @@ export default class Game {
         this.canvasContext.clearRect(this.popupCornerTLX + 600, this.popupCornerTLY + 150,
           350, 280);
         const explanationLines: Array<string> = this.getLines(this.currentQuestion.explanation,
-          this.popupCornerBRX - 50 - this.popupCornerTLX - 600);
+          this.popupCornerBRX - 50 - this.popupCornerTLX - 500);
 
         this.canvasContext.fillText(this.currentQuestion.answerWrong,
           this.popupCornerTLX + 600, this.popupCornerTLY + 150);
         for (let i = 0; i < explanationLines.length; i++) {
           this.canvasContext.fillText(explanationLines[i],
             this.popupCornerTLX + 600, this.popupCornerTLY + 200 + 20 * i,
-            this.popupCornerBRX - 50 - this.popupCornerTLX - 600);
+            this.popupCornerBRX - 50 - this.popupCornerTLX - 500);
         }
       }
     }
