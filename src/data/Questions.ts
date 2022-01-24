@@ -102,7 +102,7 @@ export default class Questions {
   public static readonly questionsNL: Map<string, Question> = new Map<string, Question>([
     ['question0',
       new Question('Ik zit midden in een chat gesprek/sessie, iemand zegt iets heel gemeen. Wat moet ik doen: "?',
-        ['Iets vervelend terug zeggen?', 'Hem vragen zich te verontschuldigen?', 'Niet reageren; een volwassenen vertellen of het me dwars zit?'],
+        ['Iets vervelend terug zeggen?', 'Hem vragen zich te verontschuldigen?', 'Niet reageren'],
         2, 'Correct', 'Wrong',
         'Zoals misschien wel duidelijk is, moet je natuurlijk nooit reageren op berichten die gemeen of kwetsend bedoeld zijn en je in welke manier dan ook ongemakkelijk laten voelen. Het is niet jouw fout dat je zon bericht krijgt. Als je een bericht zoals dit krijgt, vertel dit dan meteen aan je ouders.')],
 
