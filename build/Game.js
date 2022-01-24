@@ -11,6 +11,7 @@ export default class Game {
     paths = new Map([
         ['tile0', '../Assets/tile1.jpeg'],
         ['tile1', '../Assets/tile2.jpeg'],
+        ['tile2', '../Assets/tile3.jpeg'],
         ['player00', '../Assets/playerWalkLeft1.png'],
         ['player01', '../Assets/playerWalkLeft2.png'],
         ['player10', '../Assets/playerWalkUp1.png'],
