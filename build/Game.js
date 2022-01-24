@@ -25,7 +25,9 @@ export default class Game {
         ['doorH', '../Assets/door_horizontally.png'],
         ['doorV', '../Assets/door_vertically.png'],
         ['doorHO', '../Assets/door_horizontally_open.png'],
-        ['doorVO', '../Assets/door_vertically_open.png']
+        ['doorVO', '../Assets/door_vertically_open.png'],
+        ['startScreen', '../Assets/startScreen.jpg'],
+        ['endScreen', '../Assets/Endscreen.jpg']
     ]);
     assets = new Map();
     controls = new Map([
@@ -39,7 +41,8 @@ export default class Game {
         [KeyListener.KEY_DOWN, false],
         [KeyListener.KEY_SPACE, false],
         [KeyListener.KEY_ENTER, false],
-        [KeyListener.KEY_ESC, false]
+        [KeyListener.KEY_ESC, false],
+        [KeyListener.KEY_E, false]
     ]);
     movementControls = [];
     currentSecond = 0;
@@ -48,7 +51,7 @@ export default class Game {
     lastUpdate = Date.now();
     playerCharacterImage;
     flag = false;
-    gameState = 0;
+    gameState = 10;
     popupRenderProgress = 0;
     popopCenterX;
     popopCenterY;
@@ -68,6 +71,9 @@ export default class Game {
     currentQuestion;
     score = 1000;
     sectionClearTime = 100;
+    firstLevelRender = false;
+    firstStartScreenRender = false;
+    firstEndScreenRender = false;
     constructor(canvasHTML) {
         this.canvasHTML = canvasHTML;
         this.canvas = (this.canvasHTML);
@@ -84,8 +90,6 @@ export default class Game {
         this.player = new Player(100, 100);
     }
     gameLaunch() {
-        this.gameState = 0;
-        this.renderLevel();
         requestAnimationFrame(() => this.renderFrame());
     }
     renderLevel() {
@@ -153,20 +157,26 @@ export default class Game {
         if (this.selectionChangeCooldown > 0) {
             this.selectionChangeCooldown -= 1;
         }
-        if (this.score > 0) {
-            this.score -= 0.01;
+        if (this.score > 0 && this.gameState < 10) {
+            this.score -= 0.02;
         }
         if (this.score < 0) {
             this.score = 0;
         }
-        console.log(this.score);
         if (this.gameState === 0) {
+            if (!this.firstLevelRender) {
+                this.renderLevel();
+                this.firstLevelRender = true;
+            }
             this.processPlayerInput();
             if (this.player.processPlayerMovement(this.interactables, this.movementControls, this.calculateTimeDeltaTime())) {
                 this.renderCharacter(this.player);
                 if (this.frameCount % 20 === 0) {
                     this.flag = !this.flag;
                 }
+            }
+            if (this.player.xcoord >= 885 && this.player.ycoord >= 300) {
+                this.gameState = 11;
             }
         }
         if (this.gameState === 1) {
@@ -190,7 +200,72 @@ export default class Game {
             this.popupContentRendered = false;
             this.renderPopupClosing();
         }
-        this.renderFps(this.calculateFps());
+        if (this.gameState === 10) {
+            if (!this.firstStartScreenRender) {
+                this.canvasContext.drawImage(this.assets.get('startScreen'), 0, 0, this.canvas.width, this.canvas.height);
+                this.canvasContext.font = '20px Consolas';
+                this.canvasContext.textBaseline = 'top';
+                this.canvasContext.fillStyle = '#55ff55';
+                const startText = (this.language === 'en' ? 'PRESS SPACE TO START' : 'DRUK SPATIEBALK OM TE STARTEN');
+                const { width } = this.canvasContext.measureText(startText);
+                this.canvasContext.fillText(startText, this.canvas.width / 2 - width / 2, this.canvas.height / 6 * 5);
+                this.canvasContext.font = '15px Consolas';
+                this.canvasContext.textBaseline = 'top';
+                this.canvasContext.fillStyle = '#55ff55';
+                const controlsTextEN = [
+                    'CONTROLS:',
+                    'WASD and arrows to move and navigate,',
+                    'SPACEBAR to interact and confirm,',
+                    'E om van taal te wisselen.'
+                ];
+                const controlsTextNL = [
+                    'BEDIENINGSELEMENTEN:',
+                    'WASD en pijlen om te bewegen en te navigeren,',
+                    'SPATIEBALK voor interactie en bevestiging,',
+                    'E to switch language.'
+                ];
+                for (let i = 0; i < controlsTextEN.length; i++) {
+                    this.canvasContext.fillText((this.language === 'en' ? controlsTextEN[i] : controlsTextNL[i]), 20, 400 + 20 * i);
+                }
+                this.canvasContext.font = 'small-caps 50px Consolas';
+                this.canvasContext.textBaseline = 'top';
+                this.canvasContext.fillStyle = '#55ff55';
+                const titleText = 'Prison Break';
+                this.canvasContext.fillText(titleText, 850, this.canvas.height / 6);
+                this.firstStartScreenRender = true;
+            }
+            this.processPlayerInput();
+        }
+        if (this.gameState === 11) {
+            if (!this.firstEndScreenRender) {
+                this.canvasContext.drawImage(this.assets.get('endScreen'), 0, 0, this.canvas.width, this.canvas.height);
+                this.canvasContext.font = 'italic small-caps 50px Consolas';
+                this.canvasContext.textBaseline = 'top';
+                this.canvasContext.fillStyle = '#55ff55';
+                const endText = 'The End.';
+                const { width } = this.canvasContext.measureText(endText);
+                this.canvasContext.fillText(endText, this.canvas.width / 2 - width / 2, this.canvas.height / 6);
+                this.canvasContext.font = 'bold 20px Consolas';
+                this.canvasContext.textBaseline = 'top';
+                this.canvasContext.fillStyle = '#000000';
+                const scoreTextEN = [
+                    `Your score: ${Math.floor(this.score)}.`,
+                    'Press SPACEBAR to play again.'
+                ];
+                const scoreTextNL = [
+                    `Jouw score: ${Math.floor(this.score)}.`,
+                    'Druk op SPATIEBALK om opnieuw te spelen.'
+                ];
+                for (let i = 0; i < scoreTextEN.length; i++) {
+                    this.canvasContext.fillText((this.language === 'en' ? scoreTextEN[i] : scoreTextNL[i]), 20, 400 + 20 * i);
+                }
+                this.firstEndScreenRender = true;
+            }
+            this.processPlayerInput();
+        }
+        if (this.gameState < 10) {
+            this.renderFps(this.calculateFps());
+        }
         this.calculateTimeDeltaTime();
         requestAnimationFrame(() => this.renderFrame());
     }
@@ -198,6 +273,15 @@ export default class Game {
         this.movementControls.fill(false);
         this.controls.forEach((state, keycode) => {
             this.controls.set(keycode, this.keyListener.isKeyDown(keycode));
+            if (state && keycode === KeyListener.KEY_E && this.selectionChangeCooldown <= 0) {
+                this.language = (this.language === 'en' ? 'nl' : 'en');
+                this.firstStartScreenRender = false;
+                this.firstEndScreenRender = false;
+                if (this.gameState === 2 && !this.interactedObject.isSectionClear) {
+                    this.renderPopupContent();
+                }
+                this.selectionChangeCooldown = 40;
+            }
             if (this.gameState === 0) {
                 if (keycode === KeyListener.KEY_A || keycode === KeyListener.KEY_LEFT) {
                     this.movementControls[0] ||= state;
@@ -215,7 +299,7 @@ export default class Game {
                     this.interact();
                 }
             }
-            if (this.gameState === 2) {
+            if (this.gameState === 2 && !this.interactedObject.isSectionClear) {
                 if (state) {
                     if (keycode === KeyListener.KEY_ESC) {
                         this.gameState = 3;
@@ -251,6 +335,20 @@ export default class Game {
                             this.renderMenuOptions();
                             this.renderMenuOptionSelector();
                         }
+                    }
+                }
+            }
+            if (this.gameState === 10) {
+                if (state) {
+                    if (keycode === KeyListener.KEY_SPACE || keycode === KeyListener.KEY_ENTER) {
+                        this.gameState = 0;
+                    }
+                }
+            }
+            if (this.gameState === 11) {
+                if (state) {
+                    if (keycode === KeyListener.KEY_SPACE || keycode === KeyListener.KEY_ENTER) {
+                        location.reload();
                     }
                 }
             }

@@ -36,7 +36,9 @@ export default class Game {
     ['doorH', '../Assets/door_horizontally.png'],
     ['doorV', '../Assets/door_vertically.png'],
     ['doorHO', '../Assets/door_horizontally_open.png'],
-    ['doorVO', '../Assets/door_vertically_open.png']]);
+    ['doorVO', '../Assets/door_vertically_open.png'],
+    ['startScreen', '../Assets/startScreen.jpg'],
+    ['endScreen', '../Assets/Endscreen.jpg']]);
 
   // Map of all Assets
   private assets: Map<string, HTMLImageElement> = new Map<string, HTMLImageElement>();
@@ -53,7 +55,8 @@ export default class Game {
     [KeyListener.KEY_DOWN, false],
     [KeyListener.KEY_SPACE, false],
     [KeyListener.KEY_ENTER, false],
-    [KeyListener.KEY_ESC, false]]);
+    [KeyListener.KEY_ESC, false],
+    [KeyListener.KEY_E, false]]);
 
   // Array of all directions in which player moves (0 - west, 1 - north, 2 - east, 3 - south)
   private movementControls: Array<boolean> = [];
@@ -73,7 +76,7 @@ export default class Game {
   private flag: boolean = false;
 
   // Current Game state
-  private gameState: number = 0;
+  private gameState: number = 10;
 
   // The Pop-up percentage size in relation to Canvas Size
   private popupRenderProgress: number = 0;
@@ -124,6 +127,12 @@ export default class Game {
   // Section Clear time
   private sectionClearTime: number = 100;
 
+  private firstLevelRender: boolean = false;
+
+  private firstStartScreenRender: boolean = false;
+
+  private firstEndScreenRender: boolean = false;
+
   /**
    * Constructing a new instance of this class
    *
@@ -152,8 +161,6 @@ export default class Game {
    * Game Launch
    */
   public gameLaunch(): void {
-    this.gameState = 0;
-    this.renderLevel();
     requestAnimationFrame(() => this.renderFrame());
   }
 
@@ -249,16 +256,18 @@ export default class Game {
     if (this.selectionChangeCooldown > 0) {
       this.selectionChangeCooldown -= 1;
     }
-    if (this.score > 0) {
-      this.score -= 0.01;
+    if (this.score > 0 && this.gameState < 10) {
+      this.score -= 0.02;
     }
     if (this.score < 0) {
       this.score = 0;
     }
 
-    console.log(this.score);
-
     if (this.gameState === 0) {
+      if (!this.firstLevelRender) {
+        this.renderLevel();
+        this.firstLevelRender = true;
+      }
       this.processPlayerInput();
       if (this.player.processPlayerMovement(this.interactables,
         this.movementControls, this.calculateTimeDeltaTime())) {
@@ -266,6 +275,9 @@ export default class Game {
         if (this.frameCount % 20 === 0) {
           this.flag = !this.flag;
         }
+      }
+      if (this.player.xcoord >= 885 && this.player.ycoord >= 300) {
+        this.gameState = 11;
       }
     }
 
@@ -293,7 +305,89 @@ export default class Game {
       this.renderPopupClosing();
     }
 
-    this.renderFps(this.calculateFps());
+    if (this.gameState === 10) {
+      if (!this.firstStartScreenRender) {
+        this.canvasContext.drawImage(this.assets.get('startScreen'),
+          0, 0, this.canvas.width, this.canvas.height);
+
+        this.canvasContext.font = '20px Consolas';
+        this.canvasContext.textBaseline = 'top';
+        this.canvasContext.fillStyle = '#55ff55';
+        const startText = (this.language === 'en' ? 'PRESS SPACE TO START' : 'DRUK SPATIEBALK OM TE STARTEN');
+        const { width } = this.canvasContext.measureText(startText);
+        this.canvasContext.fillText(startText,
+          this.canvas.width / 2 - width / 2, this.canvas.height / 6 * 5);
+
+        this.canvasContext.font = '15px Consolas';
+        this.canvasContext.textBaseline = 'top';
+        this.canvasContext.fillStyle = '#55ff55';
+        const controlsTextEN: Array<string> = [
+          'CONTROLS:',
+          'WASD and arrows to move and navigate,',
+          'SPACEBAR to interact and confirm,',
+          'E om van taal te wisselen.'];
+
+        const controlsTextNL: Array<string> = [
+          'BEDIENINGSELEMENTEN:',
+          'WASD en pijlen om te bewegen en te navigeren,',
+          'SPATIEBALK voor interactie en bevestiging,',
+          'E to switch language.'];
+
+        for (let i = 0; i < controlsTextEN.length; i++) {
+          this.canvasContext.fillText((this.language === 'en' ? controlsTextEN[i] : controlsTextNL[i]),
+            20, 400 + 20 * i);
+        }
+
+        this.canvasContext.font = 'small-caps 50px Consolas';
+        this.canvasContext.textBaseline = 'top';
+        this.canvasContext.fillStyle = '#55ff55';
+        const titleText = 'Prison Break';
+        this.canvasContext.fillText(titleText,
+          850, this.canvas.height / 6);
+
+        this.firstStartScreenRender = true;
+      }
+      this.processPlayerInput();
+    }
+
+    if (this.gameState === 11) {
+      if (!this.firstEndScreenRender) {
+        this.canvasContext.drawImage(this.assets.get('endScreen'),
+          0, 0, this.canvas.width, this.canvas.height);
+
+        this.canvasContext.font = 'italic small-caps 50px Consolas';
+        this.canvasContext.textBaseline = 'top';
+        this.canvasContext.fillStyle = '#55ff55';
+
+        const endText = 'The End.';
+        const { width } = this.canvasContext.measureText(endText);
+        this.canvasContext.fillText(endText,
+          this.canvas.width / 2 - width / 2, this.canvas.height / 6);
+
+        this.canvasContext.font = 'bold 20px Consolas';
+        this.canvasContext.textBaseline = 'top';
+        this.canvasContext.fillStyle = '#000000';
+
+        const scoreTextEN: Array<string> = [
+          `Your score: ${Math.floor(this.score)}.`,
+          'Press SPACEBAR to play again.'];
+
+        const scoreTextNL: Array<string> = [
+          `Jouw score: ${Math.floor(this.score)}.`,
+          'Druk op SPATIEBALK om opnieuw te spelen.'];
+
+        for (let i = 0; i < scoreTextEN.length; i++) {
+          this.canvasContext.fillText((this.language === 'en' ? scoreTextEN[i] : scoreTextNL[i]),
+            20, 400 + 20 * i);
+        }
+        this.firstEndScreenRender = true;
+      }
+      this.processPlayerInput();
+    }
+
+    if (this.gameState < 10) {
+      this.renderFps(this.calculateFps());
+    }
     this.calculateTimeDeltaTime();
     requestAnimationFrame(() => this.renderFrame());
   }
@@ -305,6 +399,16 @@ export default class Game {
     this.movementControls.fill(false);
     this.controls.forEach((state: boolean, keycode: number) => {
       this.controls.set(keycode, this.keyListener.isKeyDown(keycode));
+
+      if (state && keycode === KeyListener.KEY_E && this.selectionChangeCooldown <= 0) {
+        this.language = (this.language === 'en' ? 'nl' : 'en');
+        this.firstStartScreenRender = false;
+        this.firstEndScreenRender = false;
+        if (this.gameState === 2 && !this.interactedObject.isSectionClear) {
+          this.renderPopupContent();
+        }
+        this.selectionChangeCooldown = 40;
+      }
 
       // Input of Regular Game State
       if (this.gameState === 0) {
@@ -325,7 +429,7 @@ export default class Game {
           this.interact();
         }
       }
-      if (this.gameState === 2) {
+      if (this.gameState === 2 && !this.interactedObject.isSectionClear) {
         if (state) {
           if (keycode === KeyListener.KEY_ESC) {
             this.gameState = 3;
@@ -361,6 +465,20 @@ export default class Game {
               this.renderMenuOptions();
               this.renderMenuOptionSelector();
             }
+          }
+        }
+      }
+      if (this.gameState === 10) {
+        if (state) {
+          if (keycode === KeyListener.KEY_SPACE || keycode === KeyListener.KEY_ENTER) {
+            this.gameState = 0;
+          }
+        }
+      }
+      if (this.gameState === 11) {
+        if (state) {
+          if (keycode === KeyListener.KEY_SPACE || keycode === KeyListener.KEY_ENTER) {
+            location.reload();
           }
         }
       }
@@ -428,7 +546,7 @@ export default class Game {
       this.canvasContext.font = '20px Consolas';
       this.canvasContext.textBaseline = 'top';
       this.canvasContext.fillStyle = '#55ff55';
-      const clearSectionText = (this.language === 'en' ? 'Section Completed' : 'Stage Voltooid')
+      const clearSectionText = (this.language === 'en' ? 'Section Completed' : 'Stage Voltooid');
       const { width } = this.canvasContext.measureText(clearSectionText);
       this.canvasContext.fillText(clearSectionText,
         this.popopCenterX - width / 2, this.popopCenterY);
