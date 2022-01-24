@@ -102,9 +102,15 @@ export default class Questions {
   public static readonly questionsNL: Map<string, Question> = new Map<string, Question>([
     ['question0',
       new Question('Ik zit midden in een chat gesprek/sessie, iemand zegt iets heel gemeen. Wat moet ik doen: "?',
+<<<<<<< Updated upstream
         ['Iets vervelend terug zeggen? ', 'Hem vragen zich te verontschuldigen? ', 'Niet reageren; een volwassenen vertellen of het me dwars zit? '],
         2, 'Correct', 'verkeerd',
         'Most of these sites are deceptive, and even a very reliable site with similar information is likely to make you pay extra, and you need to ignore these links when you see them.')],
+=======
+        ['Iets vervelend terug zeggen?', 'Hem vragen zich te verontschuldigen?', 'Niet reageren; een volwassenen vertellen of het me dwars zit?'],
+        2, 'Correct', 'Wrong',
+        'Zoals misschien wel duidelijk is, moet je natuurlijk nooit reageren op berichten die gemeen of kwetsend bedoeld zijn en je in welke manier dan ook ongemakkelijk laten voelen. Het is niet jouw fout dat je zon bericht krijgt. Als je een bericht zoals dit krijgt, vertel dit dan meteen aan je ouders.')],
+>>>>>>> Stashed changes
 
     ['question1',
       new Question('Ik ben online op het internet en ik krijg een bericht van de internet provider die vraagt naar mijn wachtwoord. De internetprovider zegt dat dit nodig is om mijn account te fiksen. Moet ik mijn wachtwoord geven? ',
@@ -126,8 +132,13 @@ export default class Questions {
 
     ['question4',
       new Question('Wat doe je als een vreemde vraagt of je een foto van jezelf doorstuurt?',
+<<<<<<< Updated upstream
         ['Geen photos sturen, en meteen vertellen aan je ouders ', 'Stuur de foto zelfs als het een vreemde is', 'Negeer het bericht'],
         0, 'Correct', 'verkeerd',
+=======
+        ['Geen photos sturen, en meteen vertellen aan je ouders', 'Stuur de foto zelfs als het een vreemde is', 'Negeer het bericht'],
+        0, 'Correct', 'Wrong',
+>>>>>>> Stashed changes
         'Je moet nooit photos maken van jezelf en naar vreemden sturen. J weet namelijk niet wie ze zijn en wat ze misschien van plan zijn. Als een vreemde vraagt voor een foto, weiger dit en vertel het een volwassenen dit meteen. Je moet nooit een foto sturen die niet door iemand anders gezien mag worden, zelfs als je deze persoon helemaal vertrouwt. Dit kan namelijk nog steeds bij vreemden terecht komen.')],
 
     ['question5',
@@ -144,14 +155,24 @@ export default class Questions {
 
     ['question7',
       new Question('Iemand in je klas heeft een gênante foto van een andere klasgenoot rondgestuurd. Wat moet je doen?',
+<<<<<<< Updated upstream
         ['Laat het aan de leraar zien en vertel wat er is gebeurd', 'Stuur de foto door naar andere mensen', 'Bewaar het op je telefoon zodat je ze later voorschut kan zetten', 'Lach met je vrienden om de foto'],
         0, 'Correct', 'verkeerd',
+=======
+        ['Laat het aan de leraar zien en vertel wat er is gebeurd', 'Stuur de foto door naar andere mensen', 'Bewaar het op je telefoon zodat je ze later voorschut kan zetten'],
+        0, 'Correct', 'Wrong',
+>>>>>>> Stashed changes
         'Je moet je leraar de foto laten zien en vertellen wat er is gebeurd. Bedenk hoe je je zou voelen als de foto van jou was.')],
 
     ['question8',
       new Question('Een van je vrienden heeft een video van je op internet geplaatst en je vindt het niet leuk. Je hebt ze gevraagd om het te verwijderen, maar ze willen het niet doen omdat het grappig is. Wat moet je doen?',
+<<<<<<< Updated upstream
         ['Blijf vragen tot je vriend/vriendin de video verwijdert', 'Praat met een volwassene en vertel waarom je het niet leuk vindt', 'Gewoon laten doen- je kunt er niets anders aan doen', 'Plaats een video van hen om ze terug te krijgen.'],
         1, 'Correct', 'verkeerd',
+=======
+        ['Blijf vragen tot je vriend/vriendin de video verwijdert', 'Praat er met een volwassene over', 'Gewoon laten doen- je kunt er niets anders aan doen', 'Plaats een video van hen om ze terug te krijgen'],
+        1, 'Correct', 'Wrong',
+>>>>>>> Stashed changes
         'Je moet met een volwassene praten over wat er is gebeurd en hem vertellen dat je het niet leuk vindt. Ze kunnen dan proberen de video te verwijderen.')],
 
     ['question9',
@@ -162,37 +183,67 @@ export default class Questions {
 
     ['question10',
       new Question('Een klasgenoot vertelt je dat iemand hem gemene namen heeft genoemd in een online game. Wat zou je moeten doen?',
+<<<<<<< Updated upstream
         ['Vertel het je leraar of een andere volwassene ', 'Zeg hem dat hij de persoon gemene namen terug moet bellen ', 'Zeg hem dat hij het gewoon moet negeren en het moet laten verdwijnen', 'Zeg hem om een tijdje te stoppen met het spelen van games '],
         0, 'Correct', 'verkeerd',
+=======
+        ['Vertel het je leraar of een andere volwassene', 'Zeg hem dat hij de persoon gemene namen terug moet bellen', 'Zeg hem dat hij het gewoon moet negeren'],
+        0, 'Correct', 'Wrong',
+>>>>>>> Stashed changes
         'Iemand online gemene namen noemen, is cyberpesten. Je moet het aan een volwassene vertellen en het niet negeren. ')],
 
     ['question11',
       new Question('Met wie kunt u uw wachtwoorden delen? ',
+<<<<<<< Updated upstream
         ['Je vrienden ', 'Niemand - je moet ze voor jezelf houden ', 'Jouw familie ', 'je leraar'],
         1, 'Correct', 'verkeerd',
+=======
+        ['Je vrienden ', 'Niemand - je moet ze voor jezelf houden', 'Jouw familie ', 'je leraar'],
+        1, 'Correct', 'Wrong',
+>>>>>>> Stashed changes
         'U moet uw wachtwoorden altijd voor uzelf houden. Het kan gevaarlijk zijn als uw wachtwoord in verkeerde handen valt')],
 
     ['question12',
       new Question('Je bent op een gaming-website geweest en deze vraagt je om een link te downloaden voordat je gaat spelen. Wat zou je moeten doen? ',
+<<<<<<< Updated upstream
         ['Laat de link zien aan een volwassene en vraag of het veilig is ', 'Download het toch ', 'Download het niet, het moet illegaal zijn', 'Vraag je vrienden wat ze moeten doen'],
         0, 'Correct', 'verkeerd',
+=======
+        ['Laat de link zien aan een volwassene', 'Download het toch', 'Download het niet, het moet illegaal zijn', 'Vraag je vrienden wat ze moeten doen'],
+        0, 'Correct', 'Wrong',
+>>>>>>> Stashed changes
         'Praat altijd met een volwassene als een website je vraagt iets te downloaden. Je weet nooit wat het kan zijn. ')],
 
     ['question13',
       new Question('U moet een wachtwoord voor een website aanmaken. Wat moet je gebruiken? ',
+<<<<<<< Updated upstream
         ['Uw volledige naam (bijv. smid) ', 'Een deel van je naam en een nummer (bijv. jack123) ', 'Een willekeurige combinatie van woord, cijfer en interpunctie (bijv. 1cer3am!) ', 'Een bijnaam die je vrienden je noemen (bijvoorbeeld springjacks) '],
         2, 'Correct', 'verkeerd',
+=======
+        ['jacksmith', 'jack123', '1cer3am! ', 'jumpingjacks',],
+        2, 'Correct', 'Wrong',
+>>>>>>> Stashed changes
         'De sterkste wachtwoorden hebben een combinatie van letters, cijfers en leestekens. Gebruik nooit iets dat aan uw naam is gekoppeld, omdat het heel gemakkelijk te raden is. ')],
 
     ['question14',
       new Question('Soms ziet u https:// of een slotsymbool voor een webadres. Wat betekent dat?',
+<<<<<<< Updated upstream
         ['Ik heb geen toegang tot de website', 'De website heeft een wachtwoord nodig', 'Het is geen kindvriendelijke website', 'Het betekent dat het veiliger is om persoonlijke informatie in te voeren'],
         3, 'Correct', 'verkeerd',
+=======
+        ['Ik heb geen toegang tot de website', 'De website heeft een wachtwoord nodig', 'Het is geen kindvriendelijke website', 'Het betekent dat het veiliger'],
+        3, 'Correct', 'Wrong',
+>>>>>>> Stashed changes
         'https:// of het slotsymbool dat soms voor het webadres wordt weergegeven, geeft aan dat de website veiliger is. Het hoeft niet voor elke website te staan, maar als u persoonlijke informatie invoert, moet u ervoor zorgen dat deze is beveiligd met https://.')],
 
     ['question15',
       new Question('Je ontvangt een nieuw vriendschapsverzoek van een persoon die geen profielfoto heeft, maar zo heet iemand ook uit jouw klas. U:',
+<<<<<<< Updated upstream
         ['Verwijder het omdat je te cool bent om vrienden met diegene te zijn op social media.', 'Accepteer het meteen', 'Vraag je klasgenoot persoonlijk om er zeker van te zijn dat hij/zij het verzoek heeft verzonden', 'Stuur ze een bericht met de vraag wie ze zijn'],
         2, 'Correct', 'verkeerd',
+=======
+        ['Verwijder het ', 'Accepteer het meteen', 'Overleg eerst met je klasgenoot', 'Stuur ze een bericht met de vraag wie ze zijn'],
+        2, 'Correct', 'Wrong',
+>>>>>>> Stashed changes
         'Wees voorzichtig met wie je toevoegt als vriend op social media. Wanneer je online een vriend toevoegt, hebben ze toegang tot veel van je persoonlijke gegevens, inclusief al je geposte fotos. Vergeet niet om te controleren of de persoon die u toevoegt, is wie hij zegt dat hij is.')]]);
 }
