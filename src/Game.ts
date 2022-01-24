@@ -58,9 +58,6 @@ export default class Game {
   // Array of all directions in which player moves (0 - west, 1 - north, 2 - east, 3 - south)
   private movementControls: Array<boolean> = [];
 
-  // Interactable that player interacts with
-  private interactedObject: Interactable;
-
   private currentSecond: number = 0;
 
   private framesLastSecond: number = 0;
@@ -98,6 +95,12 @@ export default class Game {
   // Instance containing a map of all Interactables
   private interactables: Interactables = new Interactables();
 
+  // ID of Interactable that player interacts with in Interactables map
+  private interactedObjectID: string;
+
+  // Interactable that player interacts with
+  private interactedObject: Interactable;
+
   // Current text display language (en for English and nl for Dutch)
   private language: string = 'en';
 
@@ -110,7 +113,13 @@ export default class Game {
   private selectionChangeCooldown: number = 0;
 
   // Index of the currently rendered in Popup Question with Interactables map
-  private currentlyRenderedQuestionIndex: number;
+  private currentlyRenderedQuestionIndex: number = 0;
+
+  // Instance of the currently rendered Question
+  private currentQuestion: Question;
+
+  // Player score
+  private score: number = 1000;
 
   /**
    * Constructing a new instance of this class
@@ -237,6 +246,12 @@ export default class Game {
     if (this.selectionChangeCooldown > 0) {
       this.selectionChangeCooldown -= 1;
     }
+    if (this.score > 0) {
+      this.score -= 1;
+    }
+    if (this.score < 0) {
+      this.score = 0;
+    }
 
     if (this.gameState === 0) {
       this.processPlayerInput();
@@ -304,29 +319,36 @@ export default class Game {
           if (keycode === KeyListener.KEY_ESC) {
             this.gameState = 3;
           }
-          if (keycode === KeyListener.KEY_SPACE || keycode === KeyListener.KEY_ENTER) {
+          if (this.selectionChangeCooldown <= 0
+            && (keycode === KeyListener.KEY_SPACE || keycode === KeyListener.KEY_ENTER)) {
+            this.selectionChangeCooldown = 40;
             this.selectInteractableOption();
           }
-          if (this.selectionChangeCooldown <= 0) {
+          if (this.selectionChangeCooldown <= 0
+            && this.currentlyRenderedQuestionIndex === this.interactedObject.answeredQuestions) {
             if (keycode === KeyListener.KEY_A || keycode === KeyListener.KEY_LEFT) {
               this.selectedMenuOption -= 1;
               this.selectionChangeCooldown = 40;
-              this.renderPopupContent();
+              this.renderMenuOptions();
+              this.renderMenuOptionSelector();
             }
             if (keycode === KeyListener.KEY_W || keycode === KeyListener.KEY_UP) {
               this.selectedMenuOption -= 1;
               this.selectionChangeCooldown = 40;
-              this.renderPopupContent();
+              this.renderMenuOptions();
+              this.renderMenuOptionSelector();
             }
             if (keycode === KeyListener.KEY_D || keycode === KeyListener.KEY_RIGHT) {
               this.selectedMenuOption += 1;
               this.selectionChangeCooldown = 40;
-              this.renderPopupContent();
+              this.renderMenuOptions();
+              this.renderMenuOptionSelector();
             }
             if (keycode === KeyListener.KEY_S || keycode === KeyListener.KEY_DOWN) {
               this.selectedMenuOption += 1;
               this.selectionChangeCooldown = 40;
-              this.renderPopupContent();
+              this.renderMenuOptions();
+              this.renderMenuOptionSelector();
             }
           }
         }
@@ -338,8 +360,8 @@ export default class Game {
    * Processing Player interaction
    */
   public interact(): void {
-    const interactedObjectID: string = this.player.playerInteractCheck(this.interactables);
-    this.interactedObject = this.interactables.interactables.get(interactedObjectID);
+    this.interactedObjectID = this.player.playerInteractCheck(this.interactables);
+    this.interactedObject = this.interactables.interactables.get(this.interactedObjectID);
     if (typeof this.interactedObject !== 'undefined') {
       this.gameState = 1;
     }
@@ -357,6 +379,7 @@ export default class Game {
       this.popupRenderProgress += this.calculateTimeDeltaTime() * 180;
     } else {
       this.popupRenderProgress = 80;
+      this.selectionChangeCooldown = 40;
       this.gameState = 2;
     }
   }
@@ -390,50 +413,30 @@ export default class Game {
       this.popupCornerBRX - this.popupCornerTLX - 50,
       this.popupCornerBRY - this.popupCornerTLY - 50);
 
-    this.canvasContext.font = '17px Consolas';
+    this.canvasContext.font = '12px Consolas';
     this.canvasContext.textBaseline = 'top';
     this.canvasContext.fillStyle = '#55ff55';
 
     // Rendering Question in Popup
-    let currentlyRenderedQuestion: Question;
     if (this.language === 'en') {
-      currentlyRenderedQuestion = this.interactedObject.questionsEN
+      this.currentQuestion = this.interactedObject.questionsEN
         [this.currentlyRenderedQuestionIndex];
     }
     if (this.language === 'nl') {
-      currentlyRenderedQuestion = this.interactedObject.questionsNL
+      this.currentQuestion = this.interactedObject.questionsNL
         [this.currentlyRenderedQuestionIndex];
     }
-    this.renderQuestion(currentlyRenderedQuestion);
+    this.renderQuestion();
+    this.setMenuOptions();
+    this.renderMenuOptions();
     this.renderMenuOptionSelector();
-
-    let nextIsAnswered: boolean = false;
-    let previousIsAnswered: boolean = false;
-
-    if (this.currentlyRenderedQuestionIndex !== 0) {
-      previousIsAnswered = true;
-    }
-    if (this.currentlyRenderedQuestionIndex < this.interactedObject.answeredQuestions) {
-      nextIsAnswered = true;
-    } else {
-      this.menuOptions = currentlyRenderedQuestion.answers;
-    }
-
-    if (previousIsAnswered) {
-      this.menuOptions.push(`${(this.language === 'en' ? 'Previous' : '')}`);
-    }
-    if (nextIsAnswered) {
-      this.menuOptions.push(`${(this.language === 'en' ? 'Next' : '')}`);
-    }
   }
 
   /**
    * Rendering of Question in Popup
-   *
-   * @param currentlyRenderedQuestion Index of the current Question
    */
-  public renderQuestion(currentlyRenderedQuestion: Question): void {
-    const lines: Array<string> = this.getLines(currentlyRenderedQuestion.question,
+  public renderQuestion(): void {
+    const lines: Array<string> = this.getLines(this.currentQuestion.question,
       this.popupCornerBRX - this.popupCornerTLX - 50);
 
     for (let i = 0; i < lines.length; i++) {
@@ -442,11 +445,11 @@ export default class Game {
         this.popupCornerBRX - this.popupCornerTLX - 50);
     }
 
-    for (let i = 0; i < currentlyRenderedQuestion.answers.length; i++) {
-      this.canvasContext.fillText(currentlyRenderedQuestion.answers[i],
-        this.popupCornerTLX + 50, this.popupCornerTLY + 150 + i * 50,
-        this.popupCornerBRX - this.popupCornerTLX - 50);
-    }
+    // for (let i = 0; i < this.currentQuestion.answers.length; i++) {
+    //   this.canvasContext.fillText(this.currentQuestion.answers[i],
+    //     this.popupCornerTLX + 50, this.popupCornerTLY + 150 + i * 50,
+    //     this.popupCornerBRX - this.popupCornerTLX - 50);
+    // }
   }
 
   /**
@@ -477,9 +480,98 @@ export default class Game {
   }
 
   /**
+   * Setting menu options
+   */
+  public setMenuOptions(): void {
+    this.menuOptions = [];
+    this.menuOptions = this.currentQuestion.answers;
+    console.log(this.currentlyRenderedQuestionIndex);
+    if (this.currentlyRenderedQuestionIndex > 0) {
+      this.menuOptions.push(`${(this.language === 'en' ? 'Previous' : '')}`);
+    }
+    if (this.currentlyRenderedQuestionIndex < this.interactedObject.answeredQuestions) {
+      this.menuOptions.push(`${(this.language === 'en' ? 'Next' : '')}`);
+    }
+  }
+
+  /**
+   * Rendering of all menu options
+   */
+  public renderMenuOptions(): void {
+    this.canvasContext.font = '12px Consolas';
+    this.canvasContext.textBaseline = 'top';
+    this.canvasContext.fillStyle = '#55ff55';
+
+    this.canvasContext.clearRect(this.popupCornerTLX + 30, this.popupCornerTLY + 150,
+      140, 200);
+    for (let i = 0; i < this.menuOptions.length; i++) {
+      this.canvasContext.fillText(this.menuOptions[i],
+        this.popupCornerTLX + 50, this.popupCornerTLY + 150 + i * 50,
+        this.popupCornerBRX - this.popupCornerTLX - 50);
+    }
+  }
+
+  /**
+   * Processing Player menu option commiting
+   */
+  public selectInteractableOption(): void {
+    this.canvasContext.font = '12px Consolas';
+    this.canvasContext.textBaseline = 'top';
+    this.canvasContext.fillStyle = '#55ff55';
+
+    if (this.currentlyRenderedQuestionIndex === this.interactedObject.answeredQuestions) {
+      this.canvasContext.clearRect(this.popupCornerTLX + 300, this.popupCornerTLY + 150,
+        600, 280);
+      const explanationLines: Array<string> = this.getLines(this.currentQuestion.explanation,
+        this.popupCornerBRX - 50 - this.popupCornerTLX - 300);
+      if (this.selectedMenuOption === this.currentQuestion.correctAnswer) {
+        this.score += 100;
+        this.canvasContext.fillText(this.currentQuestion.answerCorrect,
+          this.popupCornerTLX + 300, this.popupCornerTLY + 150);
+        console.log('Correct');
+        this.selectedMenuOption = this.currentQuestion.answers.length;
+        this.interactedObject.answeredQuestions += 1;
+        this.interactedObject.correctAnswers += 1;
+        if (this.interactedObject.answeredQuestions === this.interactedObject.questionsEN.length) {
+          this.interactedObject.isSectionClear = true;
+          for (let i = 0; i < this.interactedObject.doors.length; i++) {
+            this.interactedObject.doors[i].isOpen = true;
+          }
+        }
+        this.interactables.interactables.set(this.interactedObjectID, this.interactedObject);
+        this.setMenuOptions();
+        this.renderMenuOptions();
+        this.renderMenuOptionSelector();
+        console.log(this.selectedMenuOption);
+
+        for (let i = 0; i < explanationLines.length; i++) {
+          this.canvasContext.fillText(explanationLines[i],
+            this.popupCornerTLX + 300, this.popupCornerTLY + 200 + 20 * i,
+            this.popupCornerBRX - 50 - this.popupCornerTLX - 300);
+        }
+      } else if (this.selectedMenuOption < this.currentQuestion.answers.length) {
+        this.score -= 100;
+        this.canvasContext.fillText(this.currentQuestion.answerWrong,
+          this.popupCornerTLX + 300, this.popupCornerTLY + 150);
+        console.log('Wrong');
+
+        for (let i = 0; i < explanationLines.length; i++) {
+          this.canvasContext.fillText(explanationLines[i],
+            this.popupCornerTLX + 300, this.popupCornerTLY + 200 + 20 * i,
+            this.popupCornerBRX - 50 - this.popupCornerTLX - 300);
+        }
+      }
+    }
+  }
+
+  /**
    * Rendering of menu option selector
    */
   public renderMenuOptionSelector(): void {
+    this.canvasContext.font = '12px Consolas';
+    this.canvasContext.textBaseline = 'top';
+    this.canvasContext.fillStyle = '#55ff55';
+
     if (this.selectedMenuOption < 0) {
       this.selectedMenuOption = this.menuOptions.length - 1;
     } else if (this.selectedMenuOption >= this.menuOptions.length) {
@@ -513,13 +605,6 @@ export default class Game {
     this.canvasContext.lineWidth = 15;
     this.canvasContext.strokeRect(this.popupCornerTLX - 1, this.popupCornerTLY - 1,
       this.popupCornerBRX + 1, this.popupCornerBRY + 1);
-  }
-
-  /**
-   * Process Intereactable menu option selection
-   */
-  public selectInteractableOption(): void {
-
   }
 
   /**

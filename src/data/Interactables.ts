@@ -8,7 +8,7 @@ export default class Interactables {
     ['interactable0', new Interactable(1, 7,
       [
         Questions.questionsEN.get('question0'),
-        Questions.questionsEN.get('question0')],
+        Questions.questionsEN.get('question1')],
       [
         Questions.questionsNL.get('question0'),
         Questions.questionsNL.get('question0')],
@@ -17,7 +17,7 @@ export default class Interactables {
     ['interactable1', new Interactable(2, 1,
       [
         Questions.questionsEN.get('question1'),
-        Questions.questionsEN.get('question1')],
+        Questions.questionsEN.get('question2')],
       [
         Questions.questionsNL.get('question1'),
         Questions.questionsNL.get('question1')],

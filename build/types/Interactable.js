@@ -6,7 +6,8 @@ export default class Interactable {
     doors;
     answeredQuestions;
     correctAnswers;
-    constructor(tileX, tileY, questionsEN, questionsNL, doors, answeredQuestions = 0, correctAnswers = 0) {
+    isSectionClear;
+    constructor(tileX, tileY, questionsEN, questionsNL, doors, answeredQuestions = 0, correctAnswers = 0, isSectionClear = false) {
         this.tileX = tileX;
         this.tileY = tileY;
         this.questionsEN = questionsEN;
@@ -14,6 +15,7 @@ export default class Interactable {
         this.doors = doors;
         this.answeredQuestions = answeredQuestions;
         this.correctAnswers = correctAnswers;
+        this.isSectionClear = isSectionClear;
     }
 }
 //# sourceMappingURL=Interactable.js.map
