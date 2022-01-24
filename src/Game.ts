@@ -358,15 +358,15 @@ export default class Game {
         this.canvasContext.font = 'italic small-caps 50px Consolas';
         this.canvasContext.textBaseline = 'top';
         this.canvasContext.fillStyle = '#55ff55';
-
-        const endText = 'The End.';
-        const { width } = this.canvasContext.measureText(endText);
-        this.canvasContext.fillText(endText,
-          this.canvas.width / 2 - width / 2, this.canvas.height / 6);
-
-        this.canvasContext.font = 'bold 20px Consolas';
+        {
+          const endText = 'The End.';
+          const { width } = this.canvasContext.measureText(endText);
+          this.canvasContext.fillText(endText,
+            this.canvas.width / 2 - width / 2, this.canvas.height / 6);
+        }
+        this.canvasContext.font = 'bold 18px Consolas';
         this.canvasContext.textBaseline = 'top';
-        this.canvasContext.fillStyle = '#000000';
+        this.canvasContext.fillStyle = '#55ff55';
 
         const scoreTextEN: Array<string> = [
           `Your score: ${Math.floor(this.score)}.`,
@@ -377,8 +377,9 @@ export default class Game {
           'Druk op SPATIEBALK om opnieuw te spelen.'];
 
         for (let i = 0; i < scoreTextEN.length; i++) {
-          this.canvasContext.fillText((this.language === 'en' ? scoreTextEN[i] : scoreTextNL[i]),
-            20, 400 + 20 * i);
+          const scoreLine: string = (this.language === 'en' ? scoreTextEN[i] : scoreTextNL[i]);
+          const { width } = this.canvasContext.measureText(scoreLine);
+          this.canvasContext.fillText(scoreLine, this.canvas.width / 2 - width / 2, 443 + 20 * i);
         }
         this.firstEndScreenRender = true;
       }

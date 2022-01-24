@@ -95,7 +95,7 @@ export default class Questions {
 
     ['question15',
       new Question('You receive a new friend request from a person who does not have a profile picture, but you recognize the name as someone in your class. You:',
-        ['Delete it because you are to cool for friends.', ' Accept it right away.', 'Ask the classmate to prove they sent the request.', 'Send them a message asking who they are.'],
+        ['Delete it because you are to cool for friends.', 'Accept it right away.', 'Ask the classmate to prove they sent the request.', 'Send them a message asking who they are.'],
         2, 'Correct', 'Wrong',
         'Be careful about who you add as a friend on any social media account. When you add a friend online they can access a lot of your personal information, including all your posted pictures. Remember to double check that the person you are adding is who they say they are. ')]]);
 
