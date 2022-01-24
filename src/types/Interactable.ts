@@ -14,8 +14,6 @@ export default class Interactable {
 
   public answeredQuestions: number;
 
-  public correctAnswers: number;
-
   public isSectionClear: boolean;
 
   /**
@@ -27,13 +25,12 @@ export default class Interactable {
    * @param questionsNL
    * @param doors
    * @param answeredQuestions
-   * @param correctAnswers
    * @param isSectionClear
    */
   public constructor(tileX: number, tileY: number,
     questionsEN: Array<Question>, questionsNL: Array<Question>,
     doors: Array<Door>,
-    answeredQuestions: number = 0, correctAnswers: number = 0,
+    answeredQuestions: number = 0,
     isSectionClear: boolean = false) {
     this.tileX = tileX;
     this.tileY = tileY;
@@ -41,7 +38,6 @@ export default class Interactable {
     this.questionsNL = questionsNL;
     this.doors = doors;
     this.answeredQuestions = answeredQuestions;
-    this.correctAnswers = correctAnswers;
     this.isSectionClear = isSectionClear;
   }
 }

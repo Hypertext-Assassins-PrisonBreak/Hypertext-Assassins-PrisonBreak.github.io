@@ -121,6 +121,9 @@ export default class Game {
   // Player score
   private score: number = 1000;
 
+  // Section Clear time
+  private sectionClearTime: number = 100;
+
   /**
    * Constructing a new instance of this class
    *
@@ -247,7 +250,7 @@ export default class Game {
       this.selectionChangeCooldown -= 1;
     }
     if (this.score > 0) {
-      this.score -= 1;
+      this.score -= 0.01;
     }
     if (this.score < 0) {
       this.score = 0;
@@ -275,6 +278,12 @@ export default class Game {
         this.popupContentRendered = true;
       }
       this.processPlayerInput();
+      if (this.interactedObject.isSectionClear) {
+        this.sectionClearTime -= 1;
+      }
+      if (this.sectionClearTime <= 0) {
+        this.gameState = 3;
+      }
     }
 
     if (this.gameState === 3) {
@@ -410,8 +419,21 @@ export default class Game {
    */
   public renderPopupContent(): void {
     this.canvasContext.clearRect(this.popupCornerTLX + 30, this.popupCornerTLY + 30,
-      this.popupCornerBRX - this.popupCornerTLX - 50,
-      this.popupCornerBRY - this.popupCornerTLY - 50);
+      this.popupCornerBRX - this.popupCornerTLX - 30,
+      this.popupCornerBRY - this.popupCornerTLY - 30);
+
+    if (this.interactedObject.isSectionClear === true) {
+      this.canvasContext.font = '20px Consolas';
+      this.canvasContext.textBaseline = 'top';
+      this.canvasContext.fillStyle = '#55ff55';
+      const clearSectionText = (this.language === 'en' ? 'Section Completed' : 'Stage Voltooid')
+      const { width } = this.canvasContext.measureText(clearSectionText);
+      this.canvasContext.fillText(clearSectionText,
+        this.popopCenterX - width / 2, this.popopCenterY);
+      this.sectionClearTime = 100;
+      return;
+    }
+    this.sectionClearTime = 100;
 
     this.canvasContext.font = '12px Consolas';
     this.canvasContext.textBaseline = 'top';
@@ -485,13 +507,6 @@ export default class Game {
   public setMenuOptions(): void {
     this.menuOptions = [];
     this.menuOptions = this.currentQuestion.answers;
-    console.log(this.currentlyRenderedQuestionIndex);
-    if (this.currentlyRenderedQuestionIndex > 0) {
-      this.menuOptions.push(`${(this.language === 'en' ? 'Previous' : '')}`);
-    }
-    if (this.currentlyRenderedQuestionIndex < this.interactedObject.answeredQuestions) {
-      this.menuOptions.push(`${(this.language === 'en' ? 'Next' : '')}`);
-    }
   }
 
   /**
@@ -503,7 +518,7 @@ export default class Game {
     this.canvasContext.fillStyle = '#55ff55';
 
     this.canvasContext.clearRect(this.popupCornerTLX + 30, this.popupCornerTLY + 150,
-      140, 200);
+      350, 280);
     for (let i = 0; i < this.menuOptions.length; i++) {
       this.canvasContext.fillText(this.menuOptions[i],
         this.popupCornerTLX + 50, this.popupCornerTLY + 150 + i * 50,
@@ -520,18 +535,10 @@ export default class Game {
     this.canvasContext.fillStyle = '#55ff55';
 
     if (this.currentlyRenderedQuestionIndex === this.interactedObject.answeredQuestions) {
-      this.canvasContext.clearRect(this.popupCornerTLX + 300, this.popupCornerTLY + 150,
-        600, 280);
-      const explanationLines: Array<string> = this.getLines(this.currentQuestion.explanation,
-        this.popupCornerBRX - 50 - this.popupCornerTLX - 300);
       if (this.selectedMenuOption === this.currentQuestion.correctAnswer) {
         this.score += 100;
-        this.canvasContext.fillText(this.currentQuestion.answerCorrect,
-          this.popupCornerTLX + 300, this.popupCornerTLY + 150);
         console.log('Correct');
-        this.selectedMenuOption = this.currentQuestion.answers.length;
         this.interactedObject.answeredQuestions += 1;
-        this.interactedObject.correctAnswers += 1;
         if (this.interactedObject.answeredQuestions === this.interactedObject.questionsEN.length) {
           this.interactedObject.isSectionClear = true;
           for (let i = 0; i < this.interactedObject.doors.length; i++) {
@@ -539,26 +546,23 @@ export default class Game {
           }
         }
         this.interactables.interactables.set(this.interactedObjectID, this.interactedObject);
-        this.setMenuOptions();
-        this.renderMenuOptions();
-        this.renderMenuOptionSelector();
-        console.log(this.selectedMenuOption);
-
-        for (let i = 0; i < explanationLines.length; i++) {
-          this.canvasContext.fillText(explanationLines[i],
-            this.popupCornerTLX + 300, this.popupCornerTLY + 200 + 20 * i,
-            this.popupCornerBRX - 50 - this.popupCornerTLX - 300);
-        }
-      } else if (this.selectedMenuOption < this.currentQuestion.answers.length) {
+        this.currentlyRenderedQuestionIndex += 1;
+        this.renderPopupContent();
+      } else {
         this.score -= 100;
-        this.canvasContext.fillText(this.currentQuestion.answerWrong,
-          this.popupCornerTLX + 300, this.popupCornerTLY + 150);
         console.log('Wrong');
+        // Rendering explanation
+        this.canvasContext.clearRect(this.popupCornerTLX + 600, this.popupCornerTLY + 150,
+          350, 280);
+        const explanationLines: Array<string> = this.getLines(this.currentQuestion.explanation,
+          this.popupCornerBRX - 50 - this.popupCornerTLX - 600);
 
+        this.canvasContext.fillText(this.currentQuestion.answerWrong,
+          this.popupCornerTLX + 600, this.popupCornerTLY + 150);
         for (let i = 0; i < explanationLines.length; i++) {
           this.canvasContext.fillText(explanationLines[i],
-            this.popupCornerTLX + 300, this.popupCornerTLY + 200 + 20 * i,
-            this.popupCornerBRX - 50 - this.popupCornerTLX - 300);
+            this.popupCornerTLX + 600, this.popupCornerTLY + 200 + 20 * i,
+            this.popupCornerBRX - 50 - this.popupCornerTLX - 600);
         }
       }
     }
